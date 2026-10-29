@@ -9,7 +9,7 @@ import {
   simularFetch,
   sobre,
 } from "./datos-prueba";
-import { buscarFicha, reiniciarCache } from "./ficha.service";
+import { buscarFicha, obtenerCapitalesCompartidas, reiniciarCache } from "./ficha.service";
 
 function respuestaJson(cuerpo: unknown): Response {
   return new Response(JSON.stringify(cuerpo), {
@@ -147,6 +147,20 @@ describe("buscarFicha: casos normales", () => {
       pais: { nombre: "Chile", capital: "Santiago" },
     });
     expect(fetchFalso).toHaveBeenCalledTimes(2);
+  });
+
+  it("comparte la promesa de capitales con búsqueda inteligente sin duplicar la descarga", async () => {
+    const fetchFalso = simularFetch();
+    vi.stubGlobal("fetch", fetchFalso);
+
+    const primeraLectura = obtenerCapitalesCompartidas();
+    const segundaLectura = obtenerCapitalesCompartidas();
+    expect(segundaLectura).toBe(primeraLectura);
+
+    const ficha = buscarFicha("Peru");
+    await expect(primeraLectura).resolves.toEqual(CAPITALES);
+    await expect(ficha).resolves.toMatchObject({ tipo: "encontrado", pais: { nombre: "Peru" } });
+    expect(llamadasA(fetchFalso, RUTA_CAPITALES)).toBe(1);
   });
 
   it("no pasa la signal de la búsqueda a las descargas", async () => {

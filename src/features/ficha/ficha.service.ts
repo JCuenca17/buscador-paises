@@ -102,6 +102,11 @@ function obtenerLista(lista: Lista): Promise<unknown[]> {
   return promesa;
 }
 
+/** Comparte con otras funcionalidades la promesa cacheada de capitales, sin exponer su mutación. */
+export function obtenerCapitalesCompartidas(): Promise<readonly unknown[]> {
+  return obtenerLista("capitales");
+}
+
 async function obtenerIndice(): Promise<IndicePaises | null> {
   // Se piden las dos en paralelo, pero se espera primero capitales: si falla, su error es el
   // resultado sin esperar a banderas (y, si fallan ambas, manda el de capitales).

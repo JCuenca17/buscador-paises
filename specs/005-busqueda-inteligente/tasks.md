@@ -30,20 +30,20 @@
 
 ### Tests for User Story 1 (write first)
 
-- [ ] T002 [P] [US1] Add Vitest examples for normalized lookup keys, `Intl.DisplayNames` names from `iso2`, alias lookup, canonical-name priority, unknown aliases, and ambiguous aliases in `src/features/busqueda-inteligente/busqueda.service.test.ts`.
-- [ ] T003 [P] [US1] Add fast-check properties for key-normalization idempotence, invariance to case and whitespace, and equivalence between composed and decomposed accented text in `src/features/busqueda-inteligente/busqueda.normalizar.prop.test.ts`.
-- [ ] T004 [P] [US1] Add fast-check properties proving generated case/diacritic variants of a Spanish or canonical country name resolve to the same API country in `src/features/busqueda-inteligente/busqueda.matching.prop.test.ts`.
-- [ ] T005 [US1] Add mocked-loader tests for filtering invalid `name`/`iso2`, clearing failed derived-catalog promises for retry, and preserving `sin-conexion`, `tiempo-agotado`, and `respuesta-invalida` in `src/features/busqueda-inteligente/busqueda.service.test.ts`.
-- [ ] T006 [US1] After T001 approval, add a test proving `buscarFicha` and the exported capital-list accessor share one cached promise and one `/countries/capital` request in `src/features/ficha/ficha.service.test.ts`.
+- [X] T002 [P] [US1] Add Vitest examples for normalized lookup keys, `Intl.DisplayNames` names from `iso2`, alias lookup, canonical-name priority, unknown aliases, and ambiguous aliases in `src/features/busqueda-inteligente/busqueda.service.test.ts`.
+- [X] T003 [P] [US1] Add fast-check properties for key-normalization idempotence, invariance to case and whitespace, and equivalence between composed and decomposed accented text in `src/features/busqueda-inteligente/busqueda.normalizar.prop.test.ts`.
+- [X] T004 [P] [US1] Add fast-check properties proving generated case/diacritic variants of a Spanish or canonical country name resolve to the same API country in `src/features/busqueda-inteligente/busqueda.matching.prop.test.ts`.
+- [X] T005 [US1] Add mocked-loader tests for filtering invalid `name`/`iso2`, clearing failed derived-catalog promises for retry, and preserving `sin-conexion`, `tiempo-agotado`, and `respuesta-invalida` in `src/features/busqueda-inteligente/busqueda.service.test.ts`.
+- [X] T006 [US1] After T001 approval, add a test proving `buscarFicha` and the exported capital-list accessor share one cached promise and one `/countries/capital` request in `src/features/ficha/ficha.service.test.ts`.
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Implement a local lookup-key helper in `src/features/busqueda-inteligente/busqueda.service.ts` that first calls `normalizarNombre` from `src/features/ficha/normalizar.ts`, then uses Unicode NFD and removes `\p{M}` marks; leave `src/features/ficha/normalizar.ts` unchanged.
-- [ ] T008 [US1] Implement catalog construction in `src/features/busqueda-inteligente/busqueda.service.ts`, deriving each Spanish label with `Intl.DisplayNames` locale `es`, type `region`, and the API `iso2`; retain distinct records when `iso2` repeats.
-- [ ] T009 [US1] Implement alias resolution in `src/features/busqueda-inteligente/busqueda.service.ts` so canonical English exact matches take priority, unique Spanish exact aliases return the canonical API name, duplicate Spanish aliases produce and resolve `nombreEspanol — nombreApi (iso2)`, and ambiguous bare aliases are never selected arbitrarily.
-- [ ] T010 [US1] After T001 approval, export `obtenerCapitalesCompartidas(): Promise<readonly unknown[]>` from `src/features/ficha/ficha.service.ts`, returning the existing cached capital-list promise without mutating its data or issuing another request.
-- [ ] T011 [US1] Implement the derived catalog loader in `src/features/busqueda-inteligente/busqueda.service.ts` using `obtenerCapitalesCompartidas` from `src/features/ficha/ficha.service.ts`; cache the derived catalog promise, clear it after failure, and never call `fetch` or `obtenerJson` independently.
-- [ ] T012 [US1] Run and refine `src/features/busqueda-inteligente/busqueda.service.test.ts`, `src/features/busqueda-inteligente/busqueda.normalizar.prop.test.ts`, `src/features/busqueda-inteligente/busqueda.matching.prop.test.ts`, and `src/features/ficha/ficha.service.test.ts` until unit and property tests pass without live network requests.
+- [X] T007 [US1] Implement a local lookup-key helper in `src/features/busqueda-inteligente/busqueda.service.ts` that first calls `normalizarNombre` from `src/features/ficha/normalizar.ts`, then uses Unicode NFD and removes `\p{M}` marks; leave `src/features/ficha/normalizar.ts` unchanged.
+- [X] T008 [US1] Implement catalog construction in `src/features/busqueda-inteligente/busqueda.service.ts`, deriving each Spanish label with `Intl.DisplayNames` locale `es`, type `region`, and the API `iso2`; retain distinct records when `iso2` repeats.
+- [X] T009 [US1] Implement alias resolution in `src/features/busqueda-inteligente/busqueda.service.ts` so canonical English exact matches take priority, unique Spanish exact aliases return the canonical API name, duplicate Spanish aliases produce and resolve `nombreEspanol — nombreApi (iso2)`, and ambiguous bare aliases are never selected arbitrarily.
+- [X] T010 [US1] After T001 approval, export `obtenerCapitalesCompartidas(): Promise<readonly unknown[]>` from `src/features/ficha/ficha.service.ts`, returning the existing cached capital-list promise without mutating its data or issuing another request.
+- [X] T011 [US1] Implement the derived catalog loader in `src/features/busqueda-inteligente/busqueda.service.ts` using `obtenerCapitalesCompartidas` from `src/features/ficha/ficha.service.ts`; cache the derived catalog promise, clear it after failure, and never call `fetch` or `obtenerJson` independently.
+- [X] T012 [US1] Run and refine `src/features/busqueda-inteligente/busqueda.service.test.ts`, `src/features/busqueda-inteligente/busqueda.normalizar.prop.test.ts`, `src/features/busqueda-inteligente/busqueda.matching.prop.test.ts`, and `src/features/ficha/ficha.service.test.ts` until unit and property tests pass without live network requests.
 
 **Checkpoint**: Story 1 passes independently for manual resolver behavior, normalized variants, and simulated service errors.
 
@@ -55,18 +55,18 @@
 
 ### Tests for User Story 2 (write first)
 
-- [ ] T013 [US2] Add unit tests for prefix matching against English and Spanish aliases, stable source ordering, zero matches, the five-item limit, and distinct labels resolving to distinct records in `src/features/busqueda-inteligente/busqueda.service.test.ts`.
-- [ ] T014 [P] [US2] Add jsdom component tests for listbox/option semantics, mouse/keyboard selection, ArrowDown/ArrowUp, Enter, Escape, focus, stale-option invalidation, duplicate-label differentiators, all three visible error messages, and retrying the current query without submitting in `src/features/busqueda-inteligente/busqueda.component.test.ts`.
+- [X] T013 [US2] Add unit tests for prefix matching against English and Spanish aliases, stable source ordering, zero matches, the five-item limit, and distinct labels resolving to distinct records in `src/features/busqueda-inteligente/busqueda.service.test.ts`.
+- [X] T014 [P] [US2] Add jsdom component tests for listbox/option semantics, mouse/keyboard selection, ArrowDown/ArrowUp, Enter, Escape, focus, stale-option invalidation, duplicate-label differentiators, all three visible error messages, and retrying the current query without submitting in `src/features/busqueda-inteligente/busqueda.component.test.ts`.
 
 ### Implementation for User Story 2
 
-- [ ] T015 [US2] Implement prefix suggestion lookup in `src/features/busqueda-inteligente/busqueda.service.ts`, matching the current query against canonical and Spanish normalized keys and returning at most five records in source order.
-- [ ] T016 [US2] Implement suggestion rendering for the existing `#nombre-pais` input in `src/features/busqueda-inteligente/busqueda.component.ts`, using DOM nodes and `textContent` for every country label.
-- [ ] T017 [US2] Implement visible suggestion-load errors in `src/features/busqueda-inteligente/busqueda.component.ts` with the exact Spanish messages for `sin-conexion`, `tiempo-agotado`, and `respuesta-invalida`, plus «Reintentar sugerencias» that retries the current query without submitting the form.
-- [ ] T018 [US2] Implement mouse and keyboard selection in `src/features/busqueda-inteligente/busqueda.component.ts`: ArrowUp/ArrowDown navigation, Enter selection, Escape dismissal, focus retention, invalidation after input changes, and use of the differentiated label for ambiguous aliases.
-- [ ] T019 [US2] Add `aria-expanded`, `aria-controls`, `aria-activedescendant`, `role="listbox"`, `role="option"`, and `role="alert"` updates to `src/features/busqueda-inteligente/busqueda.component.ts` and verify them in `src/features/busqueda-inteligente/busqueda.component.test.ts`.
-- [ ] T020 [US2] Add focused styles for the suggestion list, active option, visible keyboard focus, and retryable alert in `src/features/busqueda-inteligente/busqueda.css`.
-- [ ] T021 [US2] Run and refine `src/features/busqueda-inteligente/busqueda.service.test.ts` and `src/features/busqueda-inteligente/busqueda.component.test.ts` until the suggestion story passes independently.
+- [X] T015 [US2] Implement prefix suggestion lookup in `src/features/busqueda-inteligente/busqueda.service.ts`, matching the current query against canonical and Spanish normalized keys and returning at most five records in source order.
+- [X] T016 [US2] Implement suggestion rendering for the existing `#nombre-pais` input in `src/features/busqueda-inteligente/busqueda.component.ts`, using DOM nodes and `textContent` for every country label.
+- [X] T017 [US2] Implement visible suggestion-load errors in `src/features/busqueda-inteligente/busqueda.component.ts` with the exact Spanish messages for `sin-conexion`, `tiempo-agotado`, and `respuesta-invalida`, plus «Reintentar sugerencias» that retries the current query without submitting the form.
+- [X] T018 [US2] Implement mouse and keyboard selection in `src/features/busqueda-inteligente/busqueda.component.ts`: ArrowUp/ArrowDown navigation, Enter selection, Escape dismissal, focus retention, invalidation after input changes, and use of the differentiated label for ambiguous aliases.
+- [X] T019 [US2] Add `aria-expanded`, `aria-controls`, `aria-activedescendant`, `role="listbox"`, `role="option"`, and `role="alert"` updates to `src/features/busqueda-inteligente/busqueda.component.ts` and verify them in `src/features/busqueda-inteligente/busqueda.component.test.ts`.
+- [X] T020 [US2] Add focused styles for the suggestion list, active option, visible keyboard focus, and retryable alert in `src/features/busqueda-inteligente/busqueda.css`.
+- [X] T021 [US2] Run and refine `src/features/busqueda-inteligente/busqueda.service.test.ts` and `src/features/busqueda-inteligente/busqueda.component.test.ts` until the suggestion story passes independently.
 
 **Checkpoint**: Story 2 displays zero to five current Spanish suggestions, supports mouse and keyboard, and can be tested without the base ficha or live API.
 
