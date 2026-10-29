@@ -33,9 +33,16 @@ function buscarEnIndice(indice: IndicePaises, texto: string): ResultadoIndice;
 /** Nunca rechaza: toda falla se devuelve como ResultadoBusqueda. */
 function buscarFicha(texto: string, opciones?: { signal?: AbortSignal }): Promise<ResultadoBusqueda>;
 
+/** Comparte con otras funcionalidades la promesa cacheada de capitales, de solo lectura. */
+function obtenerCapitalesCompartidas(): Promise<readonly unknown[]>;
+
 /** Solo para pruebas: vacía la caché de listas. */
 function reiniciarCache(): void;
 ```
+
+`obtenerCapitalesCompartidas` devuelve la misma promesa de `/countries/capital` que utiliza
+`buscarFicha`; no inicia una segunda solicitud ni permite modificar el arreglo cacheado. La
+promesa conserva el manejo de errores y el timeout de 10 segundos del cliente compartido.
 
 `buscarFicha`:
 

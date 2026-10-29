@@ -2,6 +2,27 @@
 
 Estructura y textos que fijan las pruebas del componente. Textos exactos de la especificación.
 
+## Firma del Componente
+
+### `montarFicha`
+
+Inicializa la interfaz de la ficha base en el elemento contenedor proporcionado y permite registrar un resolvedor opcional de búsqueda inteligente.
+
+```typescript
+export function montarFicha(
+  elemento: HTMLElement,
+  resolverConsulta?: (texto: string) => Promise<string>
+): void;
+```
+
+`resolverConsulta` es opcional. Si se omite, la ficha conserva su comportamiento base. Si se
+proporciona, se invoca con el texto original antes de `buscarFicha`; debe devolver el nombre
+canónico que acepta el servicio de la ficha. Si rechaza, la ficha muestra el error español de
+respuesta inválida y «Reintentar» vuelve a resolver el último texto original.
+
+La composición puede conectar un componente de búsqueda inteligente al mismo input existente.
+Este adaptador no sustituye el formulario, su validación, los estados de carga/error ni el
+renderizado de la ficha.
 ## Estructura
 
 ```html

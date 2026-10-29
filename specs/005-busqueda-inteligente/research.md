@@ -24,7 +24,7 @@ proyecto sin incorporar una librería de internacionalización o autocomplete.
 
 **Decisión**: reutilizar la promesa cacheada de `/countries/capital` que ya posee
 `src/features/ficha/ficha.service.ts`, obtenida mediante `obtenerJson` desde `src/api/http.ts`.
-Después de aprobación de Jose, ese servicio expondrá un acceso de solo lectura a la misma promesa;
+Ese servicio expone `obtenerCapitalesCompartidas()` como acceso de solo lectura a la misma promesa;
 el servicio nuevo construye su catálogo de alias a partir de ese arreglo y nunca dispara otra
 descarga ni lo modifica. Crear el nombre español con `new Intl.DisplayNames(["es"], { type:
 "region" }).of(iso2.toUpperCase())`.
