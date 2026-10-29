@@ -48,5 +48,6 @@ Los atributos `data-*` son los selectores de las pruebas; no se seleccionan por 
 - Enviar el formulario (botón o Enter) inicia la búsqueda; nunca se desactiva.
 - Evento `input` en el campo: borra el mensaje de validación y `aria-invalid`.
 - «Reintentar» repite la última `ConsultaBusqueda` y es alcanzable con Tab y activable con Enter
-  o Espacio.
+  o Espacio. Al pulsarlo, el foco vuelve a `#nombre-pais`, porque el botón desaparece al iniciar
+  la búsqueda y el foco no debe quedar en `<body>`.
 - Al iniciar una búsqueda: se ocultan ficha, error, estado y secciones, y se muestra «Buscando…».

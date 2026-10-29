@@ -7,6 +7,12 @@ import { normalizarNombre } from "./normalizar";
 import { obtenerSecciones } from "./secciones";
 import type { PaisFicha } from "./tipos";
 
+const MENSAJES_ERROR = {
+  "sin-conexion": "No hay conexión. Revisa tu conexión a internet e inténtalo de nuevo.",
+  "tiempo-agotado": "El servicio tardó demasiado en responder. Inténtalo de nuevo.",
+  "respuesta-invalida": "No se pudo obtener la información del país. Inténtalo de nuevo.",
+} as const;
+
 function crear<K extends keyof HTMLElementTagNameMap>(
   etiqueta: K,
   texto?: string,
@@ -73,6 +79,8 @@ export function montarFicha(raiz: HTMLElement): void {
 
   let idBusqueda = 0;
   let controlador: AbortController | null = null;
+  /** Texto de la última búsqueda enviada (ConsultaBusqueda), que repite «Reintentar». */
+  let ultimaConsulta = "";
 
   formulario.addEventListener("submit", (evento) => {
     evento.preventDefault();
@@ -94,6 +102,7 @@ export function montarFicha(raiz: HTMLElement): void {
   }
 
   async function buscar(texto: string): Promise<void> {
+    ultimaConsulta = texto;
     controlador?.abort();
     controlador = new AbortController();
     const { signal } = controlador;
@@ -108,8 +117,33 @@ export function montarFicha(raiz: HTMLElement): void {
     if (id !== idBusqueda) return;
 
     estado.textContent = "";
-    if (resultado.tipo === "encontrado") pintarFicha(resultado.pais, signal);
-    else if (resultado.tipo === "no-encontrado") estado.textContent = "No se encontró el país";
+    switch (resultado.tipo) {
+      case "encontrado":
+        pintarFicha(resultado.pais, signal);
+        break;
+      case "no-encontrado":
+        estado.textContent = "No se encontró el país";
+        break;
+      case "sin-conexion":
+      case "tiempo-agotado":
+      case "respuesta-invalida":
+        pintarError(MENSAJES_ERROR[resultado.tipo]);
+        break;
+      case "cancelada":
+        break;
+    }
+  }
+
+  /** Mensaje de falla con «Reintentar», que repite la última búsqueda enviada (FR-013). */
+  function pintarError(mensaje: string): void {
+    const reintentar = crear("button", "Reintentar");
+    reintentar.type = "button";
+    reintentar.addEventListener("click", () => {
+      // El botón desaparece al empezar la búsqueda: el foco vuelve al campo.
+      campo.focus();
+      void buscar(ultimaConsulta);
+    });
+    error.replaceChildren(crear("p", mensaje), reintentar);
   }
 
   function pintarFicha(pais: PaisFicha, signal: AbortSignal): void {

@@ -210,7 +210,7 @@ comprobar los mensajes y que en los dos primeros casos `buscarFicha` no se llama
 
 ### Pruebas de la historia 3 (escribirlas primero; deben fallar) ⚠️
 
-- [ ] T024 [P] [US3] Agregar a `src/features/ficha/ficha.service.test.ts` los casos de error y validación ([research.md §R5](./research.md#r5-validación-de-los-datos)):
+- [X] T024 [P] [US3] Agregar a `src/features/ficha/ficha.service.test.ts` los casos de error y validación ([research.md §R5](./research.md#r5-validación-de-los-datos)):
   - **Traducción de errores:**
     - cada `ErrorApi` de `src/api` (`sin-conexion`, `tiempo-agotado`, `respuesta-invalida`, `cancelada`) se traduce al `ResultadoBusqueda` del mismo `tipo`, y `buscarFicha` nunca rechaza;
     - si fallan ambas listas, se devuelve el error de la lista de capitales.
@@ -223,12 +223,12 @@ comprobar los mensajes y que en los dos primeros casos `buscarFicha` no se llama
     - lista de capitales o de banderas vacía tras filtrar → `respuesta-invalida`, y ambas se borran de la caché.
   - **Elementos ignorados:** los elementos sin `name` o `iso2` de texto no vacío se ignoran, y Peru se sigue encontrando.
   - **Datos mal formados del país buscado:** `capital` no textual (por ejemplo, `42`), `iso3` ausente o `""`, o `flag` no textual en su elemento de banderas → `respuesta-invalida`, mientras Chile, de la misma lista, da `encontrado`.
-- [ ] T025 [P] [US3] Escribir `src/features/ficha/ficha.validacion.prop.test.ts` con fast-check, que cubre la regla general de validación de datos exigida por el Principio IV ([research.md §R5](./research.md#r5-validación-de-los-datos)). Usa generadores de elementos arbitrarios (`fc.anything()`) mezclados con elementos válidos (`fc.record` con `name`, `iso2`, `iso3`, `capital` y `flag`), y prueba estas propiedades:
+- [X] T025 [P] [US3] Escribir `src/features/ficha/ficha.validacion.prop.test.ts` con fast-check, que cubre la regla general de validación de datos exigida por el Principio IV ([research.md §R5](./research.md#r5-validación-de-los-datos)). Usa generadores de elementos arbitrarios (`fc.anything()`) mezclados con elementos válidos (`fc.record` con `name`, `iso2`, `iso3`, `capital` y `flag`), y prueba estas propiedades:
   1. para cualesquiera arreglos `capitales` y `banderas` de `fc.array(fc.anything())`, `crearIndice` nunca lanza un error (devuelve un `IndicePaises` o `null`);
   2. toda clave de `indice.porNombre` proviene de un elemento que es objeto con `name` e `iso2` de texto no vacío, y es igual a `normalizarNombre(name)`;
   3. para cualquier índice y cualquier texto, `buscarEnIndice` nunca lanza, y si devuelve `encontrado`, `pais.capital` es `string` o `null`, y `pais.iso2` y `pais.iso3` son texto no vacío;
   4. para cualquier `flag` de texto que no empiece por `"https:"` (`fc.string().filter(s => !s.startsWith("https:"))`), el país encontrado tiene `bandera: null`.
-- [ ] T026 [P] [US3] Agregar a `src/features/ficha/ficha.component.test.ts`:
+- [X] T026 [P] [US3] Agregar a `src/features/ficha/ficha.component.test.ts`:
   - **Mensajes:** para `sin-conexion`, `tiempo-agotado` y `respuesta-invalida`, `[data-error]` muestra exactamente, en cada caso:
     - «No hay conexión. Revisa tu conexión a internet e inténtalo de nuevo.»;
     - «El servicio tardó demasiado en responder. Inténtalo de nuevo.»;
@@ -240,13 +240,14 @@ comprobar los mensajes y que en los dos primeros casos `buscarFicha` no se llama
 
 ### Implementación de la historia 3
 
-- [ ] T027 [US3] Completar `src/features/ficha/ficha.service.ts`, hasta que pasen T024 y T025:
+- [X] T027 [US3] Completar `src/features/ficha/ficha.service.ts`, hasta que pasen T024 y T025:
   - **Errores:** `buscarFicha` captura toda excepción; un `ErrorApi` se traduce por su `tipo` y cualquier otra excepción a `respuesta-invalida`.
   - **Caché:** si una lista falla con un error distinto de `cancelada`, se borra **solo esa** entrada de la caché; la cancelación de una búsqueda solo deja de esperar la promesa compartida, sin abortarla ni borrarla. Si `crearIndice` devuelve `null`, se borran ambas listas.
   - **Validación en `buscarEnIndice`:** devuelve `respuesta-invalida` si el elemento encontrado tiene `capital` que no es `string`, `iso3` que no es texto no vacío, o si existe un elemento de banderas con su `iso2` cuyo `flag` no es `string`.
-- [ ] T028 [US3] Completar `src/features/ficha/ficha.component.ts`, hasta que pase T026:
+- [X] T028 [US3] Completar `src/features/ficha/ficha.component.ts`, hasta que pase T026:
   - guarda el texto de la última búsqueda enviada (`ConsultaBusqueda`);
   - para `sin-conexion`, `tiempo-agotado` y `respuesta-invalida`, pinta en `[data-error]` el mensaje exacto de [contracts/ui.md](./contracts/ui.md) y un `<button type="button">Reintentar</button>`, que inicia una búsqueda nueva con ese texto por el mismo camino que `submit` (abortar la anterior, nuevo `idBusqueda`, «Buscando…»);
+  - al pulsar «Reintentar», devuelve el foco a `#nombre-pais`, porque el botón desaparece al iniciar la búsqueda (corrección de la revisión de la Fase 5);
   - ignora `cancelada`.
 
 **Punto de control**: las tres historias funcionan y todas las pruebas pasan.

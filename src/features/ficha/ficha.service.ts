@@ -2,7 +2,7 @@
  * Servicio de la ficha: descarga y caché de las listas, índice y búsqueda. Sin acceso al DOM.
  * Contrato: specs/001-ficha-base/contracts/ficha-service.md
  */
-import { obtenerJson } from "../../api/http";
+import { ErrorApi, obtenerJson } from "../../api/http";
 import { normalizarNombre } from "./normalizar";
 import type { IndicePaises, ResultadoBusqueda, ResultadoIndice } from "./tipos";
 
@@ -51,45 +51,78 @@ export function crearIndice(capitales: unknown[], banderas: unknown[]): IndicePa
   return { porNombre, banderaPorIso2 };
 }
 
-/** Busca el texto (se normaliza dentro) y construye el PaisFicha. */
+/**
+ * Busca el texto (se normaliza dentro) y valida el elemento del país encontrado: capital no
+ * textual, iso3 vacío o flag no textual dan respuesta-invalida (research.md §R5).
+ */
 export function buscarEnIndice(indice: IndicePaises, texto: string): ResultadoIndice {
   const elemento = indice.porNombre.get(normalizarNombre(texto));
   if (!elemento) return { tipo: "no-encontrado" };
 
-  const nombre = String(elemento.name).trim();
-  const iso2 = String(elemento.iso2);
-  const flag = indice.banderaPorIso2.get(iso2)?.flag;
+  const { name, iso2, iso3, capital } = elemento;
+  if (!esTextoNoVacio(name) || !esTextoNoVacio(iso2)) return { tipo: "respuesta-invalida" };
+  if (typeof capital !== "string" || !esTextoNoVacio(iso3)) return { tipo: "respuesta-invalida" };
+
+  const elementoBandera = indice.banderaPorIso2.get(iso2);
+  const flag = elementoBandera?.flag;
+  if (elementoBandera && typeof flag !== "string") return { tipo: "respuesta-invalida" };
 
   return {
     tipo: "encontrado",
     pais: {
-      nombre,
-      capital: typeof elemento.capital === "string" && elemento.capital !== "" ? elemento.capital : null,
+      nombre: name.trim(),
+      capital: capital === "" ? null : capital,
       bandera: typeof flag === "string" && flag.startsWith("https:") ? flag : null,
       iso2,
-      iso3: String(elemento.iso3),
+      iso3,
     },
   };
 }
 
 // Caché de sesión: se guarda la promesa de cada lista (research.md §R4).
-let capitales: Promise<unknown[]> | null = null;
-let banderas: Promise<unknown[]> | null = null;
+const RUTAS = { capitales: RUTA_CAPITALES, banderas: RUTA_BANDERAS } as const;
+type Lista = keyof typeof RUTAS;
+
+const listas: Record<Lista, Promise<unknown[]> | null> = { capitales: null, banderas: null };
 let indiceActual: { capitales: unknown[]; banderas: unknown[]; indice: IndicePaises | null } | null =
   null;
 
-async function obtenerIndice(): Promise<IndicePaises | null> {
-  // Las descargas no reciben la signal de la búsqueda: las comparten todas las búsquedas.
-  capitales ??= obtenerJson(RUTA_CAPITALES, { validar: esArreglo });
-  banderas ??= obtenerJson(RUTA_BANDERAS, { validar: esArreglo });
-  const [listaCapitales, listaBanderas] = await Promise.all([capitales, banderas]);
+/** Devuelve la lista de la caché o la pide. Si la descarga falla, se borra solo esa lista. */
+function obtenerLista(lista: Lista): Promise<unknown[]> {
+  const enCache = listas[lista];
+  if (enCache) return enCache;
 
+  // Las descargas no reciben la signal de la búsqueda: las comparten todas las búsquedas.
+  const promesa = obtenerJson(RUTAS[lista], { validar: esArreglo });
+  listas[lista] = promesa;
+  promesa.catch((error: unknown) => {
+    const cancelada = error instanceof ErrorApi && error.tipo === "cancelada";
+    if (!cancelada && listas[lista] === promesa) listas[lista] = null;
+  });
+  return promesa;
+}
+
+async function obtenerIndice(): Promise<IndicePaises | null> {
+  // Se piden las dos en paralelo, pero se espera primero capitales: si falla, su error es el
+  // resultado sin esperar a banderas (y, si fallan ambas, manda el de capitales).
+  const promesaCapitales = obtenerLista("capitales");
+  const promesaBanderas = obtenerLista("banderas");
+  const listaCapitales = await promesaCapitales;
+  const listaBanderas = await promesaBanderas;
   if (indiceActual?.capitales !== listaCapitales || indiceActual.banderas !== listaBanderas) {
     indiceActual = {
       capitales: listaCapitales,
       banderas: listaBanderas,
       indice: crearIndice(listaCapitales, listaBanderas),
     };
+  }
+
+  if (indiceActual.indice === null) {
+    // Lista vacía tras filtrar: se vuelven a pedir las dos.
+    if (listas.capitales === promesaCapitales) listas.capitales = null;
+    if (listas.banderas === promesaBanderas) listas.banderas = null;
+    indiceActual = null;
+    return null;
   }
   return indiceActual.indice;
 }
@@ -108,17 +141,22 @@ export async function buscarFicha(
   const { signal } = opciones;
   if (signal?.aborted) return { tipo: "cancelada" };
 
-  // La signal solo hace que esta búsqueda deje de esperar; la descarga compartida sigue.
-  const indice = await Promise.race([obtenerIndice(), esperarAborto(signal)]);
-  if (indice === "cancelada") return { tipo: "cancelada" };
-  if (indice === null) return { tipo: "respuesta-invalida" };
+  try {
+    // La signal solo hace que esta búsqueda deje de esperar; la descarga compartida sigue.
+    const indice = await Promise.race([obtenerIndice(), esperarAborto(signal)]);
+    if (indice === "cancelada") return { tipo: "cancelada" };
+    if (indice === null) return { tipo: "respuesta-invalida" };
 
-  return buscarEnIndice(indice, texto);
+    return buscarEnIndice(indice, texto);
+  } catch (error) {
+    // Nunca rechaza: cada ErrorApi se traduce a su resultado; lo demás es respuesta-invalida.
+    return { tipo: error instanceof ErrorApi ? error.tipo : "respuesta-invalida" };
+  }
 }
 
 /** Solo para pruebas: vacía la caché de listas. */
 export function reiniciarCache(): void {
-  capitales = null;
-  banderas = null;
+  listas.capitales = null;
+  listas.banderas = null;
   indiceActual = null;
 }

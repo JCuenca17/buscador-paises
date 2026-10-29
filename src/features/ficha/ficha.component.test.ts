@@ -478,3 +478,135 @@ describe("montarFicha: historia 2", () => {
     expect(ficha().querySelector("h2")!.textContent).toBe("Peru");
   });
 });
+
+describe("montarFicha: historia 3", () => {
+  const error = () => $("[data-error]");
+  const botonReintentar = () =>
+    [...error().querySelectorAll("button")].find((b) => b.textContent === "Reintentar");
+
+  beforeEach(() => {
+    vi.mocked(buscarFicha).mockReset();
+    reiniciarSecciones();
+    document.body.replaceChildren();
+    montarFicha(document.body);
+  });
+
+  it.each<[ResultadoBusqueda["tipo"], string]>([
+    ["sin-conexion", "No hay conexión. Revisa tu conexión a internet e inténtalo de nuevo."],
+    ["tiempo-agotado", "El servicio tardó demasiado en responder. Inténtalo de nuevo."],
+    ["respuesta-invalida", "No se pudo obtener la información del país. Inténtalo de nuevo."],
+  ])("para %s muestra el mensaje exacto y «Reintentar» (FR-014)", async (tipo, mensaje) => {
+    vi.mocked(buscarFicha).mockResolvedValue({ tipo } as ResultadoBusqueda);
+
+    buscarConBoton("Peru");
+    await esperar();
+
+    expect(error().querySelector("p")!.textContent).toBe(mensaje);
+    const reintentar = botonReintentar()!;
+    expect(reintentar).toBeDefined();
+    expect(reintentar.type).toBe("button");
+    expect(ficha().hidden).toBe(true);
+    expect(estado().textContent).not.toContain("Buscando…");
+    expect($("form").isConnected).toBe(true);
+    expect($("form").hidden).toBe(false);
+    expect(campo().isConnected).toBe(true);
+  });
+
+  it("al iniciar otra búsqueda se borra el error anterior", async () => {
+    vi.mocked(buscarFicha)
+      .mockResolvedValueOnce({ tipo: "sin-conexion" })
+      .mockReturnValueOnce(diferida<ResultadoBusqueda>().promesa);
+
+    buscarConBoton("Peru");
+    await esperar();
+    buscarConBoton("Chile");
+
+    expect(error().textContent).toBe("");
+    expect(botonReintentar()).toBeUndefined();
+    expect(estado().textContent).toBe("Buscando…");
+  });
+
+  it("«Reintentar» con clic repite la última búsqueda aunque el campo haya cambiado", async () => {
+    const reintento = diferida<ResultadoBusqueda>();
+    vi.mocked(buscarFicha)
+      .mockResolvedValueOnce({ tipo: "sin-conexion" })
+      .mockReturnValueOnce(reintento.promesa);
+
+    buscarConBoton("  pERU ");
+    await esperar();
+    escribir("otro texto");
+    botonReintentar()!.click();
+
+    expect(buscarFicha).toHaveBeenCalledTimes(2);
+    expect(vi.mocked(buscarFicha).mock.calls[1]![0]).toBe("  pERU ");
+    expect(estado().textContent).toBe("Buscando…");
+    expect(error().textContent).toBe("");
+
+    reintento.resolver(encontrado(PERU));
+    await esperar();
+    expect(ficha().hidden).toBe(false);
+    expect(ficha().querySelector("h2")!.textContent).toBe("Peru");
+  });
+
+  it("«Reintentar» se alcanza y se activa con el teclado", async () => {
+    vi.mocked(buscarFicha)
+      .mockResolvedValueOnce({ tipo: "tiempo-agotado" })
+      .mockResolvedValueOnce(encontrado(PERU));
+
+    buscarConBoton("Peru");
+    await esperar();
+
+    const reintentar = botonReintentar()!;
+    reintentar.focus();
+    expect(document.activeElement).toBe(reintentar);
+    expect(reintentar.tabIndex).toBe(0);
+    // jsdom no activa botones con Enter o Espacio; el navegador lo hace en todo <button> nativo
+    // y equivale a un clic.
+    reintentar.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+    reintentar.click();
+    await esperar();
+
+    expect(buscarFicha).toHaveBeenCalledTimes(2);
+    expect(vi.mocked(buscarFicha).mock.calls[1]![0]).toBe("Peru");
+    expect(ficha().querySelector("h2")!.textContent).toBe("Peru");
+  });
+
+  it("el resultado cancelada no muestra nada", async () => {
+    vi.mocked(buscarFicha).mockResolvedValue({ tipo: "cancelada" });
+
+    buscarConBoton("Peru");
+    await esperar();
+
+    expect(estado().textContent).toBe("");
+    expect(error().textContent).toBe("");
+    expect(ficha().hidden).toBe(true);
+    expect(botonReintentar()).toBeUndefined();
+  });
+});
+
+describe("montarFicha: foco tras «Reintentar»", () => {
+  beforeEach(() => {
+    vi.mocked(buscarFicha).mockReset();
+    reiniciarSecciones();
+    document.body.replaceChildren();
+    montarFicha(document.body);
+  });
+
+  it("al pulsar «Reintentar» el foco vuelve al campo de búsqueda", async () => {
+    vi.mocked(buscarFicha)
+      .mockResolvedValueOnce({ tipo: "sin-conexion" })
+      .mockReturnValueOnce(diferida<ResultadoBusqueda>().promesa);
+
+    buscarConBoton("Peru");
+    await esperar();
+    const reintentar = [...document.querySelectorAll("[data-error] button")].find(
+      (b) => b.textContent === "Reintentar",
+    ) as HTMLButtonElement;
+    reintentar.focus();
+    reintentar.click();
+
+    expect(reintentar.isConnected).toBe(false);
+    expect(document.activeElement).toBe(campo());
+    expect(estado().textContent).toBe("Buscando…");
+  });
+});
