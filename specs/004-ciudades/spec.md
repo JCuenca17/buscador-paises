@@ -26,7 +26,7 @@ Como visitante quiero consultar las ciudades del país encontrado sin perder su 
 Como visitante quiero encontrar ciudades escribiendo parte de su nombre.
 
 **Why this priority**: Evita recorrer listas extensas.
-**Independent Test**: Escribir «HUANUCO» y encontrar «Huánuco» sin enviar un formulario.
+**Independent Test**: Con una lista de prueba que contiene «Huánuco», escribir «HUANUCO» y encontrarlo sin enviar un formulario. No se presupone que ese nombre esté en el catálogo real. En la validación manual de Perú, usar una ciudad que la fuente sí entregue, como «Huancayo».
 
 **Acceptance Scenarios**:
 
@@ -87,7 +87,7 @@ Como visitante quiero entender los fallos y volver a intentar sin perder la fich
 ### Measurable Outcomes
 
 - **SC-001**: Con 41 ciudades se recorren 3 páginas de 20, 20 y 1, sin omisiones ni duplicados añadidos por la navegación.
-- **SC-002**: «HUANUCO», «huánuco» y su forma Unicode descompuesta encuentran los mismos resultados.
+- **SC-002**: Con una lista de prueba que contiene «Huánuco», «HUANUCO», «huánuco» y su forma Unicode descompuesta encuentran los mismos resultados. La prueba verifica equivalencia del filtro; no exige que la fuente real contenga esa ciudad.
 - **SC-003**: Filtrar y recorrer dos países en la misma sesión requiere una sola descarga exitosa del catálogo.
 - **SC-004**: Los tres fallos previstos muestran mensajes diferenciados y permiten reintentar conservando la ficha.
 - **SC-005**: Se puede completar filtro, navegación y reintento solo con teclado; ningún nombre de ciudad se interpreta como HTML.
@@ -99,6 +99,7 @@ Como visitante quiero entender los fallos y volver a intentar sin perder la fich
 - Se conservan nombres y entradas repetidas de la fuente; no se fusionan ciudades por tildes ni se traducen nombres.
 - País ausente del catálogo equivale a sin ciudades registradas. Un catálogo global vacío o sin países identificables es respuesta inválida.
 - El alcance no incluye mapas, datos de población ni mejoras al buscador de países.
+- El catálogo de la fuente puede omitir ciudades reales. La sección muestra lo registrado por la fuente y no añade ciudades manualmente. El ejemplo «Huánuco» de las pruebas es un dato controlado, no una garantía sobre el catálogo real.
 
 ## Clarifications
 

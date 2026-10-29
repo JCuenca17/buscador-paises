@@ -59,3 +59,4 @@ Pendientes fuera de las tareas de construcción: revisión de Paulo de los artef
 
 - [x] T019 Corregir puntos finales de errores y ocultar filtro sin ciudades en src/features/ciudades/ciudades.component.ts; mantenerlo para cero coincidencias y conservar foco accesible tras reintento vacío.
 - [x] T020 Verificar ajustes con src/features/ciudades/ciudades.component.test.ts, npm test, npx tsc --noEmit y npm run build; registrar evidencia en specs/004-ciudades/revision.md.
+- [x] T021 Corregir el ejemplo manual de Huánuco y el procedimiento Offline en specs/004-ciudades/spec.md y quickstart.md, y registrar el hallazgo humano y las capturas 3G/Edge en revision.md sin atribuir validaciones no observadas.
