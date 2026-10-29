@@ -5,3 +5,6 @@ coverage/
 
 # Configuración personal de Claude Code (no compartir)
 .claude/settings.local.json
+
+# Caché de Python generada por los scripts de Spec Kit
+__pycache__/

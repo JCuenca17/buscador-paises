@@ -1,0 +1,5 @@
+# Normaliza los fines de línea para todo el equipo (Windows, Mac y Linux)
+* text=auto
+
+# Los scripts de PowerShell se mantienen con CRLF en Windows
+*.ps1 text eol=crlf
