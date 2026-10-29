@@ -8,8 +8,11 @@ Informe de impacto de sincronización
   - Restricciones técnicas: el punto «Red» recoge la misma aclaración.
   - Flujo de desarrollo y revisión: se agregan /speckit-analyze (después de /speckit-tasks) y
     /speckit-converge (después de /speckit-implement, se repite hasta que reporte Converged).
-  - Gobernanza: una enmienda requiere la aprobación de al menos un integrante distinto del autor,
-    igual que cualquier pull request (antes: otros dos integrantes).
+  - VI. Revisión humana, Flujo de desarrollo y revisión, y Gobernanza: todo pull request hacia
+    main, incluidas las enmiendas de la constitución, requiere la aprobación de al menos dos
+    integrantes distintos del autor; cada aprobación incluye un comentario de revisión que
+    indica qué se revisó, cómo se probó y las observaciones encontradas (antes: un integrante
+    para cualquier pull request y para las enmiendas, sin comentario obligatorio).
   - Fecha de ratificación: pendiente hasta que el equipo apruebe el pull request.
 - Principios definidos:
   - [PRINCIPLE_1_NAME] → I. Simplicidad
@@ -112,8 +115,13 @@ básico de calidad y `textContent` evita la inyección de HTML desde datos exter
 
 - Ninguna fase de Spec Kit (especificación, plan, tareas, implementación) DEBE avanzar sin que su
   responsable haya revisado y corregido lo generado por la IA.
-- Ningún cambio DEBE llegar a la rama `main` sin un pull request aprobado por otro integrante del
-  equipo distinto de su autor.
+- Ningún cambio DEBE llegar a la rama `main` sin un pull request aprobado por al menos dos
+  integrantes del equipo distintos de su autor. Esto incluye las enmiendas de esta constitución.
+- Cada aprobación DEBE incluir un comentario de revisión que indique:
+  1. **Qué se revisó**: archivos, artefactos o partes del cambio.
+  2. **Cómo se probó**: pruebas ejecutadas, verificación manual en el navegador o con teclado.
+  3. **Observaciones encontradas**: problemas, sugerencias, o «ninguna» si no hubo.
+  Una aprobación sin este comentario NO cuenta para el mínimo de dos.
 
 **Justificación**: el responsable humano responde por el resultado; la IA acelera el trabajo,
 pero no sustituye el criterio ni la revisión entre pares.
@@ -145,21 +153,24 @@ pero no sustituye el criterio ni la revisión entre pares.
 3. El `plan.md` DEBE incluir una verificación explícita de cumplimiento de esta constitución y
    registrar cualquier excepción justificada (dependencias nuevas, cambios en código ajeno).
 4. Cada funcionalidad se desarrolla en su propia rama y se integra a `main` solo mediante pull
-   request.
+   request aprobado por al menos dos integrantes distintos del autor (Principio VI).
 5. Antes de aprobar un pull request, el revisor DEBE comprobar que:
    - todas las pruebas pasan;
    - no hay llamadas a la API real en las pruebas;
    - los textos visibles están en español y los datos se insertan con `textContent`;
    - no se modificó código de otras funcionalidades sin justificación en el plan.
+6. Cada revisor deja su aprobación con un comentario de revisión que indica qué se revisó, cómo
+   se probó y las observaciones encontradas. El pull request se integra solo cuando reúne dos
+   aprobaciones con su comentario y no quedan observaciones bloqueantes sin resolver.
 
 ## Gobernanza
 
 - Esta constitución prevalece sobre cualquier otra práctica, convención o instrucción dada a un
   agente de IA. En caso de conflicto, rige la constitución.
 - **Enmiendas**: cualquier integrante puede proponer una enmienda mediante un pull request que
-  modifique este archivo, explique el motivo y el impacto en el trabajo existente. La enmienda
-  requiere la aprobación de al menos un integrante distinto del autor, igual que cualquier pull
-  request.
+  modifique este archivo, explique el motivo y el impacto en el trabajo existente. Como todo pull
+  request hacia `main`, la enmienda requiere la aprobación de al menos dos integrantes distintos
+  del autor, cada una con su comentario de revisión (Principio VI).
 - **Versionado** (versionado semántico):
   - MAYOR: se elimina o redefine un principio de forma incompatible.
   - MENOR: se agrega un principio o sección, o se amplía materialmente una regla.
