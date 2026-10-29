@@ -24,7 +24,8 @@ Cobertura mínima de requisitos por archivo de pruebas:
 |---------|------------|
 | `src/api/http.test.ts` | FR-011, FR-012 ([contrato](./contracts/http-client.md)) |
 | `src/features/ficha/normalizar.test.ts`, `normalizar.prop.test.ts` | FR-003, FR-005 |
-| `src/features/ficha/ficha.service.test.ts` | FR-005, FR-006, FR-012 (datos mal formados), FR-015 ([contrato](./contracts/ficha-service.md)) |
+| `src/features/ficha/ficha.service.test.ts` | FR-005, FR-006, FR-010 (descarga compartida), FR-012 (datos mal formados), FR-015 ([contrato](./contracts/ficha-service.md)) |
+| `src/features/ficha/ficha.validacion.prop.test.ts` | FR-012, FR-015 (validación de datos, Principio IV) |
 | `src/features/ficha/ficha.component.test.ts` | FR-001, FR-002, FR-004, FR-007 a FR-010, FR-013, FR-014, FR-016 a FR-018 ([contrato](./contracts/ui.md)) |
 
 ## Validación manual (`npm run dev`)

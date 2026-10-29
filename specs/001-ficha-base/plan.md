@@ -53,7 +53,7 @@ primera búsqueda depende del servicio, con un tope de 10 s.
 | I. Simplicidad | HTML, CSS y TS sin frameworks, con Vite; sin backend ni base de datos; cero dependencias de ejecución. Las de desarrollo son las del Principio IV, más TypeScript, que el Principio I ya nombra. | ✅ |
 | II. Fuente de datos única | Solo `countriesnow.space/api/v0.1` vía `fetch`. Las banderas de `upload.wikimedia.org` se cargan con `<img>`, sin `fetch` (permitido). Límite de 10 s y tres fallas clasificadas en `src/api`. Ningún error deja la página en blanco (el formulario siempre visible, estados en [data-model.md](./data-model.md#estados-de-la-interfaz)). | ✅ |
 | III. Capas y funcionalidad | `src/api` es el único usuario de `fetch`. `src/features/ficha` separa el servicio (sin DOM) del componente (sin red). Las otras funcionalidades se agregan con `registrarSeccion` sin modificar `ficha`. | ✅ (ver nota 1) |
-| IV. Pruebas obligatorias | Vitest y jsdom en todos los módulos; fast-check para la normalización y la búsqueda; `fetch` simulado; quickstart con la tabla de requisitos por archivo de pruebas. | ✅ |
+| IV. Pruebas obligatorias | Vitest y jsdom en todos los módulos; fast-check para las reglas generales de normalización y búsqueda (`normalizar.prop.test.ts`) y de validación de datos (`ficha.validacion.prop.test.ts`); no hay formateo de números en esta funcionalidad; `fetch` simulado; quickstart con la tabla de requisitos por archivo de pruebas. | ✅ |
 | V. Español y accesible | Textos en español ([contracts/ui.md](./contracts/ui.md)), `<label>`, `textContent`, `role="status"`/`alert`, foco visible y uso completo con teclado. | ✅ |
 | VI. Revisión humana | El responsable revisa este plan antes de `/speckit-tasks`; el PR necesita dos aprobaciones con comentario. | ✅ (proceso) |
 
@@ -87,7 +87,8 @@ specs/001-ficha-base/
 ### Código fuente (raíz del repositorio)
 
 ```text
-index.html                     # marcado de contracts/ui.md; carga src/main.ts
+index.html                     # <div id="app">; carga src/main.ts (el marcado de
+                               # contracts/ui.md lo crea montarFicha)
 package.json                   # scripts dev, build, test, typecheck;
                                # engines.node "^22.13.0 || ^24.0.0 || >=26.0.0"
 .nvmrc                         # 24
@@ -108,6 +109,8 @@ src/
         ├── normalizar.prop.test.ts
         ├── ficha.service.ts   # validadores, crearIndice, buscarEnIndice, buscarFicha, caché
         ├── ficha.service.test.ts
+        ├── ficha.validacion.prop.test.ts # propiedades de la validación de datos (§R5)
+        ├── datos-prueba.ts    # apoyo para las pruebas: listas simuladas y simularFetch
         ├── secciones.ts       # registrarSeccion, SeccionFicha
         ├── ficha.component.ts # montarFicha(raiz): formulario, estados, idBusqueda, secciones
         └── ficha.component.test.ts
@@ -132,8 +135,9 @@ Resumen; el detalle está en [research.md](./research.md).
    - Toda la respuesta es `respuesta-invalida` solo si no es JSON, si `error` es `true`, si
      `data` no es un arreglo o si la lista queda vacía tras filtrar.
    - Una bandera que no use `https:` se trata como inexistente.
-4. **Cancelación** (§R3, §R7): la señal externa produce `cancelada`, que nunca se muestra. El
-   `idBusqueda` descarta los resultados tardíos.
+4. **Cancelación** (§R3, §R4, §R7): la señal de la búsqueda solo hace que `buscarFicha` deje de
+   esperar y devuelva `cancelada`, que nunca se muestra. No se pasa a las descargas en caché, que
+   así sirven a la búsqueda siguiente. El `idBusqueda` descarta los resultados tardíos.
 5. **Secciones** (§R8): los errores de una sección quedan aislados dentro de ella, y la ficha base
    no cambia.
 6. **`PaisFicha` incluye `iso2` e `iso3`** ([data-model.md](./data-model.md#paisficha)): las

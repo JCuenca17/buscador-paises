@@ -85,8 +85,12 @@ el caso de 10 segundos de forma determinista.
 
 **Decisión**: el servicio guarda en memoria la **promesa** de cada lista. Si una descarga falla,
 se borra solo esa entrada, para que «Reintentar» la vuelva a pedir; la lista que sí llegó se
-conserva. Las dos listas se piden en paralelo. Una búsqueda cancelada no borra una descarga
-compartida en curso: la cancelación solo deja de esperar.
+conserva. Las dos listas se piden en paralelo.
+
+Las descargas en caché **no** reciben la `signal` de la búsqueda; solo las limita el tope de 10 s
+de `src/api`. La `signal` de la búsqueda solo hace que `buscarFicha` deje de esperar y devuelva
+`cancelada`: no aborta ni borra la descarga compartida. Así, si la búsqueda A se cancela mientras
+B espera la misma descarga, B recibe igualmente la ficha.
 
 **Justificación**: evita descargar 250 países en cada búsqueda y cumple «si una descarga falla,
 Reintentar debe volver a pedirla».
@@ -126,7 +130,14 @@ su búsqueda da «No se encontró el país». Es preferible a bloquear las búsq
 **Alternativas consideradas**: invalidar toda la respuesta por un solo elemento mal formado, lo
 que resultó demasiado frágil frente a una API externa.
 
-**Pruebas exigidas**:
+**Pruebas basadas en propiedades** (fast-check, `ficha.validacion.prop.test.ts`, Principio IV):
+1. `crearIndice` nunca lanza con arreglos arbitrarios.
+2. Toda clave del índice viene de un elemento con `name` e `iso2` de texto no vacío.
+3. `buscarEnIndice` nunca devuelve `encontrado` con `capital`, `iso2` o `iso3` de tipo
+   incorrecto.
+4. Todo `flag` de texto que no empieza por `https:` da bandera `null`.
+
+**Pruebas con ejemplos exigidas**:
 - respuesta no JSON;
 - `error: true`;
 - `data` que no es un arreglo;
@@ -153,8 +164,9 @@ mismo país.
 
 **Decisión**: el componente lleva un contador `idBusqueda` y un `AbortController` por búsqueda.
 Al iniciar una nueva, aborta la anterior e incrementa el contador; al llegar un resultado, solo
-se aplica si su id es el actual. Las dos medidas se usan juntas: la cancelación libera la espera,
-y el id garantiza que un resultado tardío nunca se pinte.
+se aplica si su id es el actual. Las dos medidas se usan juntas: la cancelación libera la espera
+(sin abortar las descargas compartidas, §R4), y el id garantiza que un resultado tardío nunca se
+pinte. Enviar el campo vacío no es una búsqueda nueva: no aborta ni incrementa el contador.
 
 **Justificación**: cumple FR-010 y la aclaración 3 («Buscar» nunca se desactiva).
 

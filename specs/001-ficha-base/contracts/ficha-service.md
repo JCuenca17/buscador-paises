@@ -39,7 +39,9 @@ function reiniciarCache(): void;
 
 `buscarFicha`:
 
-1. Obtiene ambas listas en paralelo con `obtenerJson` (de la caché si ya llegaron).
+1. Obtiene ambas listas en paralelo con `obtenerJson` (de la caché si ya llegaron). Las
+   descargas no reciben `opciones.signal`; si esa señal se aborta, `buscarFicha` deja de esperar
+   y devuelve `cancelada` sin abortar ni borrar la descarga compartida.
 2. Si alguna falla, borra de la caché solo la que falló y devuelve el tipo de error. Si ambas
    fallan, devuelve el error de la lista de capitales.
 3. Con las dos listas, construye el índice (una vez por par de listas). Si `crearIndice`
@@ -56,6 +58,9 @@ Precondición: `normalizarNombre(texto) !== ""` (la validación la hace el compo
 - `normalizar.prop.test.ts` (fast-check): idempotencia; sin espacios extremos ni dobles;
   invariante a mayúsculas y espacios añadidos; toda variante de mayúsculas/espacios de un nombre
   del índice encuentra el mismo país.
+- `ficha.validacion.prop.test.ts` (fast-check): `crearIndice` nunca lanza con arreglos
+  arbitrarios; toda clave del índice viene de un elemento con `name` e `iso2` válidos;
+  `buscarEnIndice` nunca devuelve `encontrado` con tipos incorrectos; `flag` sin `https:` → `null`.
 - `ficha.service.test.ts` (`obtenerJson` o `fetch` simulado):
   - **Casos normales:**
     - encontrado, con `iso2` e `iso3` en el `PaisFicha`;

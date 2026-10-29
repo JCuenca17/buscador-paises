@@ -1,4 +1,4 @@
-# Lista de verificación de calidad de la especificación: Buscar país
+# Lista de verificación de calidad de la especificación: Ficha base
 
 **Propósito**: Validar que la especificación esté completa y tenga calidad antes de pasar a la
 planificación

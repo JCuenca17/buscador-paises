@@ -1,4 +1,4 @@
-# Especificación de funcionalidad: Buscar país
+# Especificación de funcionalidad: Ficha base
 
 **Rama de la funcionalidad**: `001-ficha-base`
 
@@ -38,6 +38,8 @@ búsqueda se limpia el resultado anterior."
   aceptar texto al llegar a 100 caracteres, sin mensaje adicional.
 - Q: ¿Cuándo desaparece el mensaje de validación? → A: En cuanto el usuario empieza a escribir en
   el campo.
+- Q: Si hay una ficha en pantalla y el usuario envía el campo vacío, ¿qué pasa con la ficha? → A:
+  La ficha se conserva y se muestra el mensaje de validación, porque no es una búsqueda nueva.
 
 ## Escenarios de usuario y pruebas *(obligatorio)*
 
@@ -147,6 +149,9 @@ inválida) y comprobar el mensaje correspondiente y que «Reintentar» repite la
   página.
 - **Nombre muy largo**: el campo acepta como máximo 100 caracteres; al llegar a ese límite deja
   de aceptar texto (también al pegar) y no muestra ningún mensaje adicional.
+- **Campo vacío con una ficha en pantalla**: si ya se muestra una ficha y el usuario envía el
+  campo vacío o con solo espacios, la ficha (con sus secciones) se conserva y se muestra el
+  mensaje de validación; no es una búsqueda nueva, así que no se limpia nada ni se consulta.
 - **Varias pulsaciones seguidas**: presionar «Buscar» o Enter varias veces mientras hay una
   consulta en curso inicia cada vez una búsqueda nueva que reemplaza a la anterior (aunque el
   texto sea el mismo); «Buscar» no se desactiva y nunca se muestran fichas duplicadas.
@@ -166,6 +171,8 @@ inválida) y comprobar el mensaje correspondiente y que «Reintentar» repite la
 - **FR-004**: Si el texto normalizado está vacío, la aplicación DEBE mostrar el mensaje de
   validación «Escribe el nombre de un país», asociado al campo, y NO DEBE realizar ninguna
   consulta. El mensaje DEBE desaparecer en cuanto el usuario empiece a escribir en el campo.
+  Enviar el campo vacío NO es una búsqueda nueva: si hay una ficha en pantalla, DEBE conservarse
+  (FR-009 no se aplica).
 - **FR-005**: La aplicación DEBE reconocer únicamente los nombres de país en inglés, tal como los
   entrega la fuente de datos (por ejemplo, «Spain», «Germany»), aplicando la normalización de
   FR-003. Un nombre en español u otra variante (por ejemplo, «España») DEBE tratarse como país no
