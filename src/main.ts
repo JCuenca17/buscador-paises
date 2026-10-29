@@ -1,9 +1,10 @@
 import "./styles.css";
 import { montarFicha } from "./features/ficha/ficha.component";
+import { inicializarMonedaUbicacion } from './features/moneda-ubicacion/index';
 
-// Punto de composición. Las otras funcionalidades registran aquí su sección de la ficha, antes
-// de montarla, con registrarSeccion(...) de "./features/ficha/secciones"
-// (specs/001-ficha-base/contracts/secciones-ficha.md). Por ejemplo:
-//   registrarSeccion(seccionPoblacion);
-
+// Punto de composición principal
 montarFicha(document.getElementById("app")!);
+
+// Inicializar tu módulo de Moneda y Ubicación
+inicializarMonedaUbicacion();
+
