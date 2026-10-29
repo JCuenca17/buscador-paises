@@ -258,10 +258,10 @@ comprobar los mensajes y que en los dos primeros casos `buscarFicha` no se llama
 
 **Propósito**: comprobar la constitución y el [quickstart](./quickstart.md) completo.
 
-- [ ] T029 Ejecutar `npm run typecheck`, `npm test` y `npm run build`: los tres terminan sin errores y `dist/` contiene solo archivos estáticos
-- [ ] T030 [P] Verificar con una búsqueda en `src/` que `fetch(` solo aparece en `src/api/http.ts`, que no hay `innerHTML`, `outerHTML`, `insertAdjacentHTML` ni `document.write`, y que todos los textos visibles de `src/features/ficha/ficha.component.ts` están en español; corregir lo que no cumpla
-- [ ] T031 [P] Verificar que ninguna prueba usa la red: ejecutar `npm test` con la red desactivada y confirmar que todo pasa
-- [ ] T032 Ejecutar los 11 pasos de validación manual de `specs/001-ficha-base/quickstart.md` con `npm run dev` (incluidos Offline, red lenta y uso solo con teclado) y corregir en el archivo correspondiente cualquier diferencia con [spec.md](./spec.md)
+- [X] T029 Ejecutar `npm run typecheck`, `npm test` y `npm run build`: los tres terminan sin errores y `dist/` contiene solo archivos estáticos
+- [X] T030 [P] Verificar con una búsqueda en `src/` que `fetch(` solo aparece en `src/api/http.ts`, que no hay `innerHTML`, `outerHTML`, `insertAdjacentHTML` ni `document.write`, y que todos los textos visibles de `src/features/ficha/ficha.component.ts` están en español; corregir lo que no cumpla
+- [X] T031 [P] Verificar que ninguna prueba usa la red: ejecutar `npm test` con la red desactivada y confirmar que todo pasa
+- [X] T032 Ejecutar los 11 pasos de validación manual de `specs/001-ficha-base/quickstart.md` con `npm run dev` (incluidos Offline, red lenta y uso solo con teclado) y corregir en el archivo correspondiente cualquier diferencia con [spec.md](./spec.md)
 
 ---
 

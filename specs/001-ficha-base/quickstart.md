@@ -38,6 +38,11 @@ Cobertura mínima de requisitos por archivo de pruebas:
 5. Buscar `España` → «No se encontró el país», sin «Reintentar».
 6. Presionar «Buscar» con el campo vacío → «Escribe el nombre de un país»; al escribir, desaparece.
 7. Pegar más de 100 caracteres → el campo se queda con 100.
+
+Para los pasos 8 a 10, en la pestaña «Red» de las herramientas del navegador, marcar «Inhabilitar
+caché» y recargar la página antes de cada paso. Si no, las listas salen de la caché de la app o
+de la caché HTTP del navegador, la limitación de red no se aplica y el paso parece fallar.
+
 8. En las herramientas del navegador, activar «Offline» y buscar → mensaje de sin conexión y
    «Reintentar»; desactivar «Offline», presionar «Reintentar» → aparece la ficha.
 9. Limitar la red a una velocidad muy baja y buscar → a los 10 s, mensaje de tiempo agotado.
