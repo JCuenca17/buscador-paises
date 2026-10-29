@@ -15,6 +15,30 @@ responde en 10 segundos o falla la conexión, se muestra un mensaje claro y el u
 a intentar. Mientras se consulta, se muestra un indicador de carga, y al iniciar una nueva
 búsqueda se limpia el resultado anterior."
 
+## Clarifications
+
+### Session 2026-10-29
+
+- Q: Cuando el nombre buscado no corresponde a ningún país, ¿se muestra «No se encontró el país» o
+  se trata como respuesta inválida con «Reintentar»? → A: Se muestra «No se encontró el país» sin
+  «Reintentar», porque no es una falla. Solo las fallas reales (sin conexión, tiempo agotado,
+  respuesta de error del servicio o datos incompletos) muestran su mensaje con «Reintentar». Cómo
+  se determina que un país no existe se decide en el plan.
+- Q: Si el país existe pero falla la obtención de su nombre, capital o bandera, ¿qué ve el
+  usuario? → A: No se muestra la ficha, sino el mensaje de la falla con «Reintentar». «No
+  disponible» solo se usa si el servicio responde bien pero el dato no existe. Si la dirección de
+  la bandera llega bien pero la imagen no carga en el navegador, no es una falla de la consulta:
+  se muestra «Bandera no disponible» con el resto de la ficha. Las secciones que agreguen otras
+  funcionalidades a la ficha (población, moneda, ciudades) manejan sus propios errores dentro de
+  su sección, sin ocultar la ficha base.
+- Q: Si el usuario presiona «Buscar» o Enter mientras una búsqueda está en curso, ¿qué pasa? → A:
+  Cada nueva búsqueda reemplaza a la que está en curso: la anterior se cancela o se descarta y
+  solo se muestra el resultado de la última; si el texto es el mismo, se repite igual.
+- Q: ¿Qué pasa si el usuario intenta escribir más de 100 caracteres? → A: El campo deja de
+  aceptar texto al llegar a 100 caracteres, sin mensaje adicional.
+- Q: ¿Cuándo desaparece el mensaje de validación? → A: En cuanto el usuario empieza a escribir en
+  el campo.
+
 ## Escenarios de usuario y pruebas *(obligatorio)*
 
 ### Historia de usuario 1 - Consultar la ficha de un país (Prioridad: P1)
@@ -65,9 +89,10 @@ ninguna consulta.
 2. **Dado** que el campo contiene solo espacios, **cuando** el usuario busca, **entonces** ocurre
    lo mismo que con el campo vacío.
 3. **Dado** que el usuario escribe un nombre que no corresponde a ningún país, **cuando** busca,
-   **entonces** se muestra el mensaje «No se encontró el país» y no se muestra ninguna ficha.
-4. **Dado** que se mostró un mensaje de validación, **cuando** el usuario escribe un nombre válido
-   y busca, **entonces** el mensaje de validación desaparece.
+   **entonces** se muestra el mensaje «No se encontró el país», sin ficha y sin botón
+   «Reintentar».
+4. **Dado** que se mostró un mensaje de validación, **cuando** el usuario empieza a escribir en el
+   campo, **entonces** el mensaje de validación desaparece de inmediato, sin esperar a que busque.
 
 ---
 
@@ -90,7 +115,8 @@ inválida) y comprobar el mensaje correspondiente y que «Reintentar» repite la
 2. **Dado** que el servicio no responde en 10 segundos, **cuando** se cumple ese plazo,
    **entonces** la consulta se cancela, se oculta el indicador de carga y se muestra «El servicio
    tardó demasiado en responder. Inténtalo de nuevo.» con el botón «Reintentar».
-3. **Dado** que el servicio responde con datos inválidos o incompletos, **cuando** termina la
+3. **Dado** que el servicio responde con un error o con datos inválidos o incompletos, **cuando**
+   termina la
    consulta, **entonces** se muestra «No se pudo obtener la información del país. Inténtalo de
    nuevo.» con el botón «Reintentar».
 4. **Dado** que se muestra un mensaje de error con «Reintentar», **cuando** el usuario lo
@@ -102,26 +128,36 @@ inválida) y comprobar el mensaje correspondiente y que «Reintentar» repite la
 ### Casos límite
 
 - **Búsquedas encadenadas**: si el usuario inicia una búsqueda nueva antes de que termine la
-  anterior, solo se muestra el resultado de la última; el resultado tardío de la anterior se
-  descarta.
+  anterior, la nueva reemplaza a la anterior: la anterior se cancela o su resultado tardío se
+  descarta, y solo se muestra el resultado de la última.
 - **Capital no disponible**: si el país existe pero no tiene capital registrada, la ficha muestra
   «Capital: no disponible» en lugar de dejar el dato vacío.
-- **Bandera no disponible o que no carga**: si no hay bandera o la imagen no se puede cargar, la
-  ficha muestra el texto «Bandera no disponible» en su lugar; el resto de la ficha se sigue
-  mostrando.
+- **Bandera no disponible o que no carga**: si el servicio responde bien pero no hay bandera para
+  el país, o si la dirección de la bandera llega bien pero la imagen no carga en el navegador, la
+  ficha muestra el texto «Bandera no disponible» en su lugar y el resto de la ficha se sigue
+  mostrando. Que la imagen no cargue no es una falla de la consulta y no ofrece «Reintentar».
+- **Falla al obtener un dato de la ficha**: si el país existe pero falla la obtención de su
+  nombre, capital o bandera (sin conexión, tiempo agotado o respuesta inválida), no se muestra la
+  ficha: se muestra el mensaje de esa falla con «Reintentar».
+- **Secciones de otras funcionalidades**: si una sección agregada a la ficha por otra
+  funcionalidad (población, moneda, ciudades) falla, esa sección muestra su propio error y la
+  ficha base sigue visible.
 - **Nombre con caracteres especiales**: textos con símbolos, números o etiquetas HTML se tratan
   como texto común: se buscan tal cual (normalizados) y nunca se interpretan como contenido de la
   página.
-- **Nombre muy largo**: el campo acepta como máximo 100 caracteres.
-- **Varias pulsaciones seguidas**: presionar «Buscar» varias veces mientras hay una consulta en
-  curso no genera fichas duplicadas.
+- **Nombre muy largo**: el campo acepta como máximo 100 caracteres; al llegar a ese límite deja
+  de aceptar texto (también al pegar) y no muestra ningún mensaje adicional.
+- **Varias pulsaciones seguidas**: presionar «Buscar» o Enter varias veces mientras hay una
+  consulta en curso inicia cada vez una búsqueda nueva que reemplaza a la anterior (aunque el
+  texto sea el mismo); «Buscar» no se desactiva y nunca se muestran fichas duplicadas.
 
 ## Requisitos *(obligatorio)*
 
 ### Requisitos funcionales
 
 - **FR-001**: La aplicación DEBE ofrecer un campo de búsqueda con la etiqueta visible «Nombre del
-  país» y un botón «Buscar».
+  país» y un botón «Buscar». El campo NO DEBE aceptar más de 100 caracteres: al llegar al límite
+  deja de aceptar texto, sin mostrar ningún mensaje adicional.
 - **FR-002**: La aplicación DEBE iniciar la búsqueda al presionar «Buscar» o al presionar Enter
   dentro del campo.
 - **FR-003**: Antes de consultar, la aplicación DEBE normalizar el texto ingresado: quitar
@@ -129,13 +165,15 @@ inválida) y comprobar el mensaje correspondiente y que «Reintentar» repite la
   distinguir mayúsculas de minúsculas.
 - **FR-004**: Si el texto normalizado está vacío, la aplicación DEBE mostrar el mensaje de
   validación «Escribe el nombre de un país», asociado al campo, y NO DEBE realizar ninguna
-  consulta.
+  consulta. El mensaje DEBE desaparecer en cuanto el usuario empiece a escribir en el campo.
 - **FR-005**: La aplicación DEBE reconocer únicamente los nombres de país en inglés, tal como los
   entrega la fuente de datos (por ejemplo, «Spain», «Germany»), aplicando la normalización de
   FR-003. Un nombre en español u otra variante (por ejemplo, «España») DEBE tratarse como país no
   encontrado (FR-006).
-- **FR-006**: Si el nombre no corresponde a ningún país, la aplicación DEBE mostrar el mensaje «No
-  se encontró el país» sin ficha.
+- **FR-006**: Si el nombre no corresponde a ningún país de la fuente de datos, la aplicación DEBE
+  mostrar el mensaje «No se encontró el país», sin ficha y sin botón «Reintentar». Este caso NO es
+  una falla y NO DEBE clasificarse como respuesta inválida. El mecanismo para determinar que un
+  país no existe se define en el plan.
 - **FR-007**: Si el país existe, la aplicación DEBE mostrar una ficha con el nombre del país, su
   capital y su bandera; la bandera DEBE tener un texto alternativo con el nombre del país (por
   ejemplo, «Bandera de Peru»).
@@ -143,21 +181,31 @@ inválida) y comprobar el mensaje correspondiente y que «Reintentar» repite la
   carga con el texto «Buscando…», anunciado a lectores de pantalla.
 - **FR-009**: Al iniciar una nueva búsqueda, la aplicación DEBE retirar de inmediato la ficha y
   cualquier mensaje de la búsqueda anterior.
-- **FR-010**: Si hay búsquedas superpuestas, la aplicación DEBE mostrar únicamente el resultado
-  de la búsqueda más reciente.
+- **FR-010**: Una nueva búsqueda iniciada mientras otra está en curso DEBE reemplazarla, aunque el
+  texto sea el mismo: la anterior se cancela o su resultado se descarta, y la aplicación DEBE
+  mostrar únicamente el resultado de la búsqueda más reciente. «Buscar» y Enter NO DEBEN
+  desactivarse durante una consulta.
 - **FR-011**: Toda consulta DEBE cancelarse si no termina en 10 segundos.
 - **FR-012**: La aplicación DEBE distinguir tres fallas y mostrar para cada una su mensaje: sin
-  conexión, tiempo agotado y respuesta inválida o incompleta (textos en la Historia 3).
-- **FR-013**: Ante cualquiera de esas tres fallas, la aplicación DEBE ofrecer un botón
-  «Reintentar» que repita la última búsqueda con el mismo texto.
+  conexión, tiempo agotado y respuesta inválida (respuesta de error del servicio o datos
+  inválidos o incompletos) (textos en la Historia 3).
+- **FR-013**: Solo ante esas tres fallas la aplicación DEBE ofrecer un botón «Reintentar» que
+  repita la última búsqueda con el mismo texto; el caso «No se encontró el país» (FR-006) no lo
+  ofrece.
 - **FR-014**: Ningún error DEBE dejar la página en blanco: siempre se ve el campo de búsqueda y un
   estado comprensible (inicial, cargando, ficha, no encontrado, validación o error).
-- **FR-015**: Si faltan la capital o la bandera, la ficha DEBE mostrar «no disponible» para ese
-  dato en lugar de fallar.
+- **FR-015**: Si el servicio responde bien pero no existe la capital o la bandera del país, la
+  ficha DEBE mostrar «no disponible» para ese dato. Si falla la obtención del nombre, la capital
+  o la bandera, la aplicación NO DEBE mostrar la ficha y DEBE mostrar el mensaje de la falla con
+  «Reintentar» (FR-012, FR-013). Si la imagen de la bandera no carga en el navegador, la ficha
+  DEBE mostrar «Bandera no disponible» y el resto de sus datos.
 - **FR-016**: Todo el flujo (escribir, buscar, reintentar) DEBE poder hacerse solo con teclado,
   con foco visible.
 - **FR-017**: Todos los textos visibles DEBEN estar en español, y los datos recibidos DEBEN
   mostrarse siempre como texto, nunca interpretarse como contenido de la página.
+- **FR-018**: La ficha base (nombre, capital y bandera) NO DEBE ocultarse ni reemplazarse por un
+  error cuando falle una sección agregada por otra funcionalidad; cada sección maneja sus propios
+  errores.
 
 ### Entidades clave
 
