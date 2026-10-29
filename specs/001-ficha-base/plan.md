@@ -97,6 +97,7 @@ vite.config.ts                 # incluye test: { environment: "jsdom" }
 src/
 ├── main.ts                    # punto de composición: registra secciones y monta la ficha
 ├── styles.css                 # estilos, :focus-visible
+├── vite-env.d.ts              # tipos de Vite para importar styles.css desde main.ts
 ├── api/
 │   ├── http.ts                # obtenerJson, ErrorApi, URL_BASE
 │   └── http.test.ts

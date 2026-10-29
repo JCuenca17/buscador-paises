@@ -40,8 +40,9 @@ function registrarSeccion(seccion: SeccionFicha): void;
   `<div data-ficha-secciones>`.
 - Cada sección recibe su propio `<section data-seccion="{id}" aria-labelledby>` con un `<h3>` con
   `titulo`.
-- Si `renderizar` lanza o su promesa se rechaza (salvo por `signal` abortada), la ficha vacía ese
-  `<section>` y muestra en él «No se pudo cargar esta sección». La ficha base y las demás
+- Si `renderizar` lanza o su promesa se rechaza (salvo por `signal` abortada), la ficha quita el
+  contenido de ese `<section>` (conserva su `<h3>`, al que apunta `aria-labelledby`) y muestra en
+  él «No se pudo cargar esta sección». La ficha base y las demás
   secciones no cambian.
 - Al iniciar otra búsqueda se aborta `signal` y se eliminan todas las secciones.
 - Registrar dos secciones con el mismo `id` lanza un error en tiempo de desarrollo.

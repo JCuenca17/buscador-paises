@@ -94,7 +94,7 @@ la ficha con nombre, capital y bandera; otras funcionalidades pueden agregar sec
 
 ### Pruebas de la historia 1 (escribirlas primero; deben fallar) ⚠️
 
-- [ ] T011 [P] [US1] Crear `src/features/ficha/datos-prueba.ts` (solo lo importan las pruebas) con sobres simulados `{ error: false, msg, data }` de capitales y banderas que reproduzcan las anomalías reales de [research.md §R2](./research.md#r2-forma-real-de-las-respuestas-de-countriesnow):
+- [X] T011 [P] [US1] Crear `src/features/ficha/datos-prueba.ts` (solo lo importan las pruebas) con sobres simulados `{ error: false, msg, data }` de capitales y banderas que reproduzcan las anomalías reales de [research.md §R2](./research.md#r2-forma-real-de-las-respuestas-de-countriesnow):
   - Peru (`PE`/`PER`, capital `Lima`, bandera `https://upload.wikimedia.org/...`) y Chile (`CL`/`CHL`, `Santiago`);
   - Antarctica (`capital: ""`);
   - Bolivia (sin elemento en banderas);
@@ -103,18 +103,18 @@ la ficha con nombre, capital y bandera; otras funcionalidades pueden agregar sec
   - Réunion (`RE`).
 
   Agregar una función `simularFetch(respuestas)` que devuelva un `fetch` falso por ruta.
-- [ ] T012 [P] [US1] Escribir `src/features/ficha/normalizar.test.ts` con ejemplos de FR-003:
+- [X] T012 [P] [US1] Escribir `src/features/ficha/normalizar.test.ts` con ejemplos de FR-003:
   - `"  pERU "` → `"peru"`;
   - `"United\t\tStates"` → `"united states"`;
   - `"  "` → `""`;
   - `"Réunion"` → `"réunion"` (conserva la tilde, FR-005);
   - `"Bonaire, Saint Eustatius and Saba "` → `"bonaire, saint eustatius and saba"`.
-- [ ] T013 [P] [US1] Escribir `src/features/ficha/normalizar.prop.test.ts` con fast-check ([research.md §R6](./research.md#r6-normalización-y-comparación)), con las propiedades:
+- [X] T013 [P] [US1] Escribir `src/features/ficha/normalizar.prop.test.ts` con fast-check ([research.md §R6](./research.md#r6-normalización-y-comparación)), con las propiedades:
   - idempotencia, `normalizarNombre(normalizarNombre(s)) === normalizarNombre(s)`;
   - el resultado no empieza ni termina con espacio y no contiene `/\s{2,}/`;
   - es invariante a `toUpperCase()` y a espacios añadidos al inicio, al final o entre palabras;
   - para cualquier nombre de `datos-prueba.ts`, toda variante aleatoria de mayúsculas o espacios hace que `buscarEnIndice` devuelva el mismo país.
-- [ ] T014 [P] [US1] Escribir en `src/features/ficha/ficha.service.test.ts` los casos normales de [contracts/ficha-service.md](./contracts/ficha-service.md), con `simularFetch` de T011 y `reiniciarCache()` en `beforeEach`:
+- [X] T014 [P] [US1] Escribir en `src/features/ficha/ficha.service.test.ts` los casos normales de [contracts/ficha-service.md](./contracts/ficha-service.md), con `simularFetch` de T011 y `reiniciarCache()` en `beforeEach`:
   - `buscarFicha("Peru")` → `encontrado` con `{ nombre: "Peru", capital: "Lima", bandera: <url https>, iso2: "PE", iso3: "PER" }`;
   - Antarctica → `capital: null`;
   - Bolivia → `bandera: null`;
@@ -122,7 +122,7 @@ la ficha con nombre, capital y bandera; otras funcionalidades pueden agregar sec
   - `"bonaire, saint eustatius and saba"` encuentra el país y `nombre` llega sin el espacio final;
   - `Cocos Islands` y `Cocos (Keeling) Islands` se encuentran por separado;
   - las dos listas se piden en paralelo, y una segunda búsqueda no vuelve a llamar a `fetch` (caché de sesión).
-- [ ] T015 [P] [US1] Escribir en `src/features/ficha/ficha.component.test.ts` los casos de la historia 1, montando `montarFicha(document.body)` con `buscarFicha` simulado vía `vi.mock("./ficha.service")`. Comprobar:
+- [X] T015 [P] [US1] Escribir en `src/features/ficha/ficha.component.test.ts` los casos de la historia 1, montando `montarFicha(document.body)` con `buscarFicha` simulado vía `vi.mock("./ficha.service")`. Comprobar:
   - el marcado de [contracts/ui.md](./contracts/ui.md): `label[for="nombre-pais"]` con el texto «Nombre del país», un `input` con `maxlength="100"` y un botón «Buscar» `type="submit"`;
   - el foco inicial está en `#nombre-pais`;
   - el `submit` por botón y la tecla Enter llaman a `buscarFicha` con el texto escrito;
@@ -136,8 +136,8 @@ la ficha con nombre, capital y bandera; otras funcionalidades pueden agregar sec
 
 ### Implementación de la historia 1
 
-- [ ] T016 [P] [US1] Implementar `normalizarNombre(texto)` en `src/features/ficha/normalizar.ts` como `texto.trim().replace(/\s+/g, " ").toLowerCase()` (sin quitar tildes ni usar `toLocaleLowerCase`), hasta que pasen T012 y T013
-- [ ] T017 [US1] Implementar en `src/features/ficha/ficha.service.ts` el camino exitoso, hasta que pase T014:
+- [X] T016 [P] [US1] Implementar `normalizarNombre(texto)` en `src/features/ficha/normalizar.ts` como `texto.trim().replace(/\s+/g, " ").toLowerCase()` (sin quitar tildes ni usar `toLocaleLowerCase`), hasta que pasen T012 y T013
+- [X] T017 [US1] Implementar en `src/features/ficha/ficha.service.ts` el camino exitoso, hasta que pase T014:
   - `esArreglo(data)`, que solo exige `Array.isArray`;
   - `crearIndice(capitales, banderas)`, que ignora los elementos sin `name` o `iso2` de texto no vacío, indexa `porNombre` por `normalizarNombre(name)` y `banderaPorIso2` por `iso2`, y devuelve `null` si alguna lista queda vacía tras filtrar;
   - `buscarEnIndice(indice, texto)`, que construye el `PaisFicha` con `nombre = name.trim()`, `capital: ""` → `null`, la bandera solo si `flag` empieza por `"https:"` (si no, `null`), e `iso2`/`iso3` del elemento de capitales;
@@ -145,21 +145,21 @@ la ficha con nombre, capital y bandera; otras funcionalidades pueden agregar sec
   - `reiniciarCache()`.
 
   Sin acceso al DOM.
-- [ ] T018 [P] [US1] Implementar en `src/features/ficha/secciones.ts`:
+- [X] T018 [P] [US1] Implementar en `src/features/ficha/secciones.ts`:
   - `interface SeccionFicha { id; titulo; renderizar(pais, contenedor, signal) }`;
   - `registrarSeccion(seccion)`, que lanza un `Error` si el `id` ya está registrado;
   - `obtenerSecciones()`, que devuelve las secciones en orden de registro;
   - `reiniciarSecciones()`, solo para pruebas.
 
   Todo según [contracts/secciones-ficha.md](./contracts/secciones-ficha.md).
-- [ ] T019 [US1] Implementar `montarFicha(raiz: HTMLElement)` en `src/features/ficha/ficha.component.ts`, hasta que pase T015:
+- [X] T019 [US1] Implementar `montarFicha(raiz: HTMLElement)` en `src/features/ficha/ficha.component.ts`, hasta que pase T015:
   - crea con `document.createElement` el marcado de [contracts/ui.md](./contracts/ui.md) (`form role="search" novalidate`, `input maxlength="100"`, `[data-estado] role="status" aria-live="polite"`, `[data-error] role="alert"`, `article[data-ficha] hidden` con `[data-ficha-secciones]`) y pone el foco en el campo;
   - en `submit`: `preventDefault`, aborta el `AbortController` anterior, incrementa `idBusqueda`, oculta la ficha, el error, el estado y las secciones, y muestra «Buscando…»;
   - llama a `buscarFicha` y aplica el resultado solo si su id sigue siendo el actual;
   - pinta la ficha **solo con `textContent`**, `img.src` e `img.alt`, y en el evento `error` de la imagen la reemplaza por «Bandera no disponible»;
   - después de la ficha, crea un `<section data-seccion aria-labelledby>` con su `<h3>` por cada `obtenerSecciones()` y llama a `renderizar` dentro de `try/catch` y `.catch`; si falla (y la `signal` no está abortada), vacía la sección y muestra «No se pudo cargar esta sección»;
   - nunca usa `innerHTML` y nunca desactiva «Buscar».
-- [ ] T020 [US1] Crear `src/main.ts`: importa `./styles.css`, deja un comentario que indique que las otras funcionalidades registran aquí su sección con `registrarSeccion(...)` ([contracts/secciones-ficha.md](./contracts/secciones-ficha.md)), y llama a `montarFicha(document.getElementById("app")!)`
+- [X] T020 [US1] Crear `src/main.ts`: importa `./styles.css`, deja un comentario que indique que las otras funcionalidades registran aquí su sección con `registrarSeccion(...)` ([contracts/secciones-ficha.md](./contracts/secciones-ficha.md)), y llama a `montarFicha(document.getElementById("app")!)`. Requiere `src/vite-env.d.ts` con `/// <reference types="vite/client" />` para que `tsc` acepte el import del CSS
 
 **Punto de control**: `npx vitest run src/features/ficha` pasa los casos de la historia 1, y
 `npm run dev` permite buscar «Peru» y ver su ficha (MVP).
