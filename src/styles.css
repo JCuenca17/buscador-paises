@@ -1,0 +1,129 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #1f2328;
+  background: #f6f8fa;
+}
+
+main {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+h1 {
+  font-size: 1.75rem;
+  margin: 0 0 1rem;
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+label {
+  flex-basis: 100%;
+  font-weight: 600;
+}
+
+input {
+  flex: 1 1 12rem;
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  font: inherit;
+  border: 1px solid #8c959f;
+  border-radius: 0.375rem;
+  background: #fff;
+}
+
+input[aria-invalid="true"] {
+  border-color: #cf222e;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  font: inherit;
+  border: 1px solid #1f6feb;
+  border-radius: 0.375rem;
+  background: #1f6feb;
+  color: #fff;
+  cursor: pointer;
+}
+
+input:focus-visible,
+button:focus-visible {
+  outline: 3px solid #0969da;
+  outline-offset: 2px;
+}
+
+.validacion {
+  order: 1;
+  flex-basis: 100%;
+  margin: 0;
+  color: #cf222e;
+  font-size: 0.875rem;
+}
+
+.validacion:empty {
+  display: none;
+}
+
+[data-estado],
+[data-error] {
+  margin: 1rem 0;
+}
+
+[data-error] {
+  color: #cf222e;
+}
+
+[data-error] button {
+  margin-top: 0.5rem;
+}
+
+article[data-ficha] {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #d0d7de;
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+article[data-ficha] h2 {
+  margin: 0 0 0.5rem;
+}
+
+figure[data-bandera] {
+  margin: 0.5rem 0 0;
+}
+
+figure[data-bandera] img {
+  display: block;
+  max-width: 100%;
+  max-height: 12rem;
+  border: 1px solid #d0d7de;
+}
+
+[data-ficha-secciones] section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #d0d7de;
+}
+
+[data-ficha-secciones] h3 {
+  margin: 0 0 0.5rem;
+}

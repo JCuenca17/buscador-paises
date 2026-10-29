@@ -8,3 +8,9 @@ coverage/
 
 # Caché de Python generada por los scripts de Spec Kit
 __pycache__/
+
+# Registros, variables de entorno y archivos del sistema
+*.log
+.env*
+.DS_Store
+Thumbs.db

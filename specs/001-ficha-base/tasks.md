@@ -36,13 +36,13 @@ pruebas junto a cada módulo como `*.test.ts` (y `*.prop.test.ts` para las de pr
 **Propósito**: crear el proyecto Vite + TypeScript con las versiones fijadas en
 [research.md §R1](./research.md#r1-versiones-de-las-herramientas).
 
-- [ ] T001 Crear `package.json` con `"name": "buscador-paises"`, `"private": true`, `"type": "module"`, `"engines": { "node": "^22.13.0 || ^24.0.0 || >=26.0.0" }`, scripts `"dev": "vite"`, `"build": "tsc --noEmit && vite build"`, `"preview": "vite preview"`, `"typecheck": "tsc --noEmit"`, `"test": "vitest run"`, `"test:watch": "vitest"`, y `devDependencies` con versiones exactas: `vite` `8.3.5`, `typescript` `7.0.2`, `vitest` `5.0.5`, `jsdom` `29.1.1`, `fast-check` `4.10.2`. Sin `dependencies` de ejecución
-- [ ] T002 [P] Crear `.nvmrc` con el contenido `24`
-- [ ] T003 [P] Crear `tsconfig.json` con `strict: true`, `target: "ES2022"`, `module: "ESNext"`, `moduleResolution: "bundler"`, `lib: ["ES2022", "DOM", "DOM.Iterable"]`, `noEmit: true`, `isolatedModules: true`, `noUnusedLocals: true`, `noUnusedParameters: true`, `include: ["src", "vite.config.ts"]`
-- [ ] T004 [P] Crear `vite.config.ts` usando `defineConfig` de `vitest/config` con `test: { environment: "jsdom", include: ["src/**/*.test.ts"], restoreMocks: true, unstubGlobals: true }`
-- [ ] T005 [P] Crear `index.html` con `<html lang="es">`, `<title>Buscador de países</title>`, `<meta name="viewport">`, un `<div id="app"></div>` vacío y `<script type="module" src="/src/main.ts"></script>` (el marcado de la ficha lo crea `montarFicha` en T020, así las pruebas del componente usan el mismo marcado)
-- [ ] T006 [P] Crear `src/styles.css` con estilos base legibles en móvil y escritorio, regla `[hidden] { display: none !important; }`, un indicador de foco visible con `:focus-visible` (contorno de al menos 2 px) para el campo y los botones, y estilo para `.validacion` (texto de error junto al campo)
-- [ ] T007 Ejecutar `npm install` para generar `package-lock.json` y comprobar que `npx vitest run --passWithNoTests` y `npx tsc --noEmit` terminan sin errores
+- [X] T001 Crear `package.json` con `"name": "buscador-paises"`, `"private": true`, `"type": "module"`, `"engines": { "node": "^22.13.0 || ^24.0.0 || >=26.0.0" }`, scripts `"dev": "vite"`, `"build": "tsc --noEmit && vite build"`, `"preview": "vite preview"`, `"typecheck": "tsc --noEmit"`, `"test": "vitest run"`, `"test:watch": "vitest"`, y `devDependencies` con versiones exactas: `vite` `8.3.5`, `typescript` `7.0.2`, `vitest` `5.0.5`, `jsdom` `29.1.1`, `fast-check` `4.10.2`. Sin `dependencies` de ejecución
+- [X] T002 [P] Crear `.nvmrc` con el contenido `24`
+- [X] T003 [P] Crear `tsconfig.json` con `strict: true`, `target: "ES2022"`, `module: "ESNext"`, `moduleResolution: "bundler"`, `lib: ["ES2022", "DOM", "DOM.Iterable"]`, `noEmit: true`, `isolatedModules: true`, `noUnusedLocals: true`, `noUnusedParameters: true`, `skipLibCheck: true`, `include: ["src", "vite.config.ts"]` (ver research.md §R1)
+- [X] T004 [P] Crear `vite.config.ts` usando `defineConfig` de `vitest/config` con `test: { environment: "jsdom", include: ["src/**/*.test.ts"], restoreMocks: true, unstubGlobals: true }`
+- [X] T005 [P] Crear `index.html` con `<html lang="es">`, `<title>Buscador de países</title>`, `<meta name="viewport">`, un `<div id="app"></div>` vacío y `<script type="module" src="/src/main.ts"></script>` (el marcado de la ficha lo crea `montarFicha` en T020, así las pruebas del componente usan el mismo marcado)
+- [X] T006 [P] Crear `src/styles.css` con estilos base legibles en móvil y escritorio, regla `[hidden] { display: none !important; }`, un indicador de foco visible con `:focus-visible` (contorno de al menos 2 px) para el campo y los botones, y estilo para `.validacion` (texto de error junto al campo)
+- [X] T007 Ejecutar `npm install` para generar `package-lock.json` y comprobar que `npx vitest run --passWithNoTests` y `npx tsc --noEmit` terminan sin errores
 
 **Punto de control**: el proyecto se instala y `npm run dev` sirve una página vacía.
 
@@ -54,12 +54,12 @@ pruebas junto a cada módulo como `*.test.ts` (y `*.prop.test.ts` para las de pr
 
 **⚠️ CRÍTICO**: ninguna historia puede empezar hasta terminar esta fase.
 
-- [ ] T008 Crear `src/features/ficha/tipos.ts` con los tipos de [data-model.md](./data-model.md):
+- [X] T008 Crear `src/features/ficha/tipos.ts` con los tipos de [data-model.md](./data-model.md):
   - `PaisFicha`, con los campos `nombre: string`, `capital: string | null`, `bandera: string | null`, `iso2: string` e `iso3: string`;
   - `ResultadoBusqueda`, unión discriminada por `tipo` con los valores `"encontrado"` (con `pais: PaisFicha`), `"no-encontrado"`, `"sin-conexion"`, `"tiempo-agotado"`, `"respuesta-invalida"` y `"cancelada"`;
   - `IndicePaises`, con `porNombre: Map<string, Record<string, unknown>>` y `banderaPorIso2: Map<string, Record<string, unknown>>`;
   - `ResultadoIndice`, con `"encontrado"`, `"no-encontrado"` y `"respuesta-invalida"`.
-- [ ] T009 [P] Escribir `src/api/http.test.ts` según [contracts/http-client.md](./contracts/http-client.md), con `fetch` simulado vía `vi.stubGlobal("fetch", ...)` que respete `init.signal` (rechaza con `DOMException` `AbortError` al abortar), `navigator.onLine` simulado con `vi.spyOn(navigator, "onLine", "get")` y temporizadores con `vi.useFakeTimers()`. Un caso por fila de la tabla:
+- [X] T009 [P] Escribir `src/api/http.test.ts` según [contracts/http-client.md](./contracts/http-client.md), con `fetch` simulado vía `vi.stubGlobal("fetch", ...)` que respete `init.signal` (rechaza con `DOMException` `AbortError` al abortar), `navigator.onLine` simulado con `vi.spyOn(navigator, "onLine", "get")` y temporizadores con `vi.useFakeTimers()`. Un caso por fila de la tabla:
   - `navigator.onLine === false` → `ErrorApi` `sin-conexion` sin llamar a `fetch`;
   - `fetch` rechaza con `TypeError` → `sin-conexion`;
   - sin respuesta en 10 000 ms (avanzar con `vi.advanceTimersByTimeAsync(10_000)`) → `tiempo-agotado` y la solicitud quedó abortada;
@@ -72,7 +72,7 @@ pruebas junto a cada módulo como `*.test.ts` (y `*.prop.test.ts` para las de pr
   - respuesta correcta → resuelve con `data` y llama a `fetch` con `URL_BASE + ruta`.
 
   Comprobar además que, tras una respuesta correcta, `vi.getTimerCount()` es 0, y que todo rechazo es `instanceof ErrorApi`.
-- [ ] T010 Implementar `src/api/http.ts` hasta que pase T009 ([research.md §R3](./research.md#r3-límite-de-10-segundos-y-clasificación-de-errores)):
+- [X] T010 Implementar `src/api/http.ts` hasta que pase T009 ([research.md §R3](./research.md#r3-límite-de-10-segundos-y-clasificación-de-errores)):
   - exporta `URL_BASE = "https://countriesnow.space/api/v0.1"`, `type TipoErrorApi`, la clase `ErrorApi extends Error` con `readonly tipo` y `obtenerJson<T>(ruta, { validar, signal?, limiteMs = 10_000 })`;
   - usa un `AbortController` propio con `setTimeout(limiteMs)` que aborta con motivo de tiempo;
   - escucha el `abort` de la `signal` externa y aborta con motivo de cancelación;

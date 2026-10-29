@@ -29,6 +29,11 @@ su cuenta, así que el cambio de compilador de TypeScript 7 no afecta al empaque
 - `jsdom` 30.1.3 (la más reciente): exige Node `^22.22.2 || ^24.15.0 || >=26.0.0` y obligaría a
   actualizar Node a parte del equipo, sin ninguna ventaja necesaria para esta funcionalidad.
 - `happy-dom`: más rápido, pero la constitución nombra jsdom.
+- Instalar `@types/node` en lugar de usar `skipLibCheck: true`: sin una de las dos, `tsc --noEmit`
+  da unos 80 errores dentro de `node_modules` por los tipos que Vite y Vitest cargan desde
+  `vite.config.ts`. Se eligió `skipLibCheck` (lo traen las plantillas oficiales de Vite) para no
+  sumar otra dependencia. El código de `src/` se sigue verificando con `strict`. Se decidió
+  durante la implementación de T007.
 
 ## R2. Forma real de las respuestas de CountriesNow
 
