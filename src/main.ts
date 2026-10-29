@@ -2,11 +2,13 @@ import "./styles.css";
 import { montarFicha } from "./features/ficha/ficha.component";
 import { registrarSeccion } from "./features/ficha/secciones";
 import { seccionCiudades } from "./features/ciudades/ciudades.component";
+import { seccionPoblacion } from "./features/poblacion/poblacion.component";
 import { obtenerCatalogoPaises, resolverPais } from "./features/busqueda-inteligente/busqueda.service";
 import { montarSugerencias } from "./features/busqueda-inteligente/busqueda.component";
 import "./features/busqueda-inteligente/busqueda.css";
 
-// Punto de composición: Registrar la sección de ciudades de Paulo
+// Punto de composición: Registrar las secciones de la ficha base
+registrarSeccion(seccionPoblacion);
 registrarSeccion(seccionCiudades);
 
 // Montar la ficha base con el resolver de búsqueda inteligente
