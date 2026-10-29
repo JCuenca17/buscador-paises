@@ -12,6 +12,12 @@
 
 **Entrada**: Descripción del usuario: "Mejorar la búsqueda para que encuentre el país aunque el usuario escriba con o sin tildes, en mayúsculas o minúsculas, o con el nombre en español (por ejemplo 'Perú', 'españa', 'Alemania'). Mientras el usuario escribe, mostrar hasta 5 sugerencias de países con su nombre en español. Al elegir una sugerencia con el mouse o el teclado, se busca ese país. Respetar la constitución, crear la funcionalidad en src/features/busqueda-inteligente e integrarla con el campo de búsqueda base sin reescribirlo. Reutilizar normalizarNombre de src/features/ficha/normalizar.ts y justificar en el plan cualquier cambio a esa función. Usar Intl.DisplayNames con idioma 'es' y el iso2 de la API para los nombres en español. Probar la normalización con fast-check."
 
+## Clarifications
+
+### Session 2026-10-29
+
+- Q: Si escribes un nombre de país en español y presionas «Buscar» sin elegir una sugerencia, ¿también debe encontrarlo? → A: La búsqueda manual y la selección de sugerencias reconocen nombres en español; la búsqueda manual funciona con el botón «Buscar» o con Enter.
+
 ## Escenarios de usuario y pruebas *(obligatorio)*
 
 ### Historia de usuario 1 - Encontrar países con distintas escrituras (Prioridad: P1)
@@ -24,8 +30,8 @@ El usuario puede buscar un país escribiendo su nombre con mayúsculas o minúsc
 
 **Escenarios de aceptación**:
 
-1. **Dado** que el usuario escribe «Perú», **cuando** envía la búsqueda, **entonces** se muestra la ficha de Peru.
-2. **Dado** que el usuario escribe «ESPAÑA» o «españa», **cuando** envía la búsqueda, **entonces** se muestra la ficha del mismo país.
+1. **Dado** que el usuario escribe «Perú», **cuando** presiona «Buscar» o Enter sin elegir una sugerencia, **entonces** se muestra la ficha de Peru.
+2. **Dado** que el usuario escribe «ESPAÑA» o «españa», **cuando** presiona «Buscar» o Enter sin elegir una sugerencia, **entonces** se muestra la ficha del mismo país.
 3. **Dado** que un país tiene tilde en su nombre, **cuando** el usuario busca ese nombre con o sin tilde, **entonces** ambas formas identifican el mismo país.
 4. **Dado** que el usuario escribe un país con espacios externos o repetidos, **cuando** se procesa la búsqueda, **entonces** esos espacios no impiden identificarlo.
 
@@ -65,7 +71,7 @@ Mientras el usuario escribe un nombre de país, ve una lista breve de coincidenc
 
 - **FR-001**: La búsqueda DEBE identificar el mismo país sin distinguir mayúsculas y minúsculas.
 - **FR-002**: La búsqueda DEBE identificar el mismo país tanto si el usuario incluye como si omite las tildes.
-- **FR-003**: La búsqueda DEBE reconocer los nombres de países en español, además de las formas ya aceptadas por el buscador base.
+- **FR-003**: La búsqueda DEBE reconocer los nombres de países en español, además de las formas ya aceptadas por el buscador base, tanto al enviar el formulario con «Buscar» o Enter como al elegir una sugerencia.
 - **FR-004**: Mientras el usuario escribe una consulta no vacía, la interfaz DEBE mostrar las coincidencias disponibles con el nombre de cada país en español y DEBE mostrar como máximo cinco.
 - **FR-005**: Los nombres visibles en español DEBEN derivarse del código ISO 3166-1 alfa-2 (`iso2`) del país usando `Intl.DisplayNames` con el idioma `es`.
 - **FR-006**: El usuario DEBE poder recorrer, activar y elegir sugerencias usando solo el teclado; también DEBE poder elegirlas con el ratón. La selección DEBE iniciar la búsqueda del país elegido.
@@ -75,7 +81,7 @@ Mientras el usuario escribe un nombre de país, ve una lista breve de coincidenc
 - **FR-010**: La lista y sus opciones DEBEN ser accesibles mediante teclado y lectores de pantalla, con estado activo perceptible y texto visible en español.
 - **FR-011**: La funcionalidad NO DEBE realizar llamadas de red directamente ni obtener datos de fuentes distintas de la fuente aprobada por el proyecto.
 - **FR-012**: Los nombres de país recibidos como datos DEBEN insertarse en el DOM como texto, nunca interpretarse como marcado.
-- **FR-013**: Al cambiar el texto de búsqueda, las sugerencias DEBEN corresponder al texto actual y una selección DEBE delegar en el flujo base el manejo de carga, resultados, errores y consulta con teclado.
+- **FR-013**: Al cambiar el texto de búsqueda, las sugerencias DEBEN corresponder al texto actual y una selección DEBE delegar en el flujo base el manejo de carga, resultados y errores. La búsqueda manual con «Buscar» o Enter DEBE reconocer los mismos nombres en español que las sugerencias.
 
 ### Entidades clave
 
@@ -96,6 +102,6 @@ Mientras el usuario escribe un nombre de país, ve una lista breve de coincidenc
 
 - Las sugerencias se actualizan a medida que se escribe, no se exige un número mínimo de caracteres y una consulta vacía no presenta opciones.
 - Si hay más de cinco coincidencias, se muestran las primeras cinco según el orden estable de los datos disponibles.
-- Las búsquedas manuales siguen permitidas; la lista de sugerencias complementa el formulario base y no reemplaza su botón «Buscar» ni su envío con Enter.
+- Las búsquedas manuales con «Buscar» o Enter y la selección de sugerencias reconocen los mismos nombres en español; la lista complementa el formulario base y no reemplaza su botón ni su envío con Enter.
 - La ficha base conserva la responsabilidad de validar el campo, consultar, presentar la ficha y gestionar los estados y errores existentes.
 - El cambio se limita a la nueva funcionalidad y a su punto de integración estrictamente necesario; cualquier modificación a otra funcionalidad debe justificarse en el plan y acordarse con su responsable.
