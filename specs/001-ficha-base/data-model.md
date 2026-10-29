@@ -90,8 +90,13 @@ inicial ──buscar(vacío)──▶ validacion ──input──▶ inicial
         ┌─────────────────┼────────────────────┬───────────────┐        │
         ▼                 ▼                    ▼               ▼        │
     encontrado      no-encontrado      error (3 tipos) ──Reintentar─────┘
+     │    ▲
+     └────┘ buscar(vacío): conserva la ficha y muestra la validación
 ```
 
 - Al entrar en `cargando` se borran la ficha, los mensajes y las secciones anteriores (FR-009).
 - Un resultado cuyo `idBusqueda` no es el actual se ignora (FR-010).
 - Desde `encontrado`, la imagen que no carga cambia solo la bandera a «Bandera no disponible».
+- Desde `encontrado`, buscar(vacío) no sale del estado: la ficha y sus secciones se conservan,
+  se muestra «Escribe el nombre de un país», no se aborta la `signal` de las secciones y no cambia
+  `idBusqueda` (FR-004, aclaración 6).
