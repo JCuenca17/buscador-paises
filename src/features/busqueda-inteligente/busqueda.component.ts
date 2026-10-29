@@ -193,15 +193,22 @@ export function montarSugerencias(
   const reintentar = () => {
     void actualizar(input.value);
   };
+  const alEnviarFormulario = () => {
+    numeroConsulta += 1;
+    cerrarLista();
+    limpiarAlerta();
+  };
 
   input.addEventListener("input", alEscribir);
   input.addEventListener("keydown", alPresionarTecla);
   botonReintentar.addEventListener("click", reintentar);
+  input.form?.addEventListener("submit", alEnviarFormulario);
 
   return () => {
     input.removeEventListener("input", alEscribir);
     input.removeEventListener("keydown", alPresionarTecla);
     botonReintentar.removeEventListener("click", reintentar);
+    input.form?.removeEventListener("submit", alEnviarFormulario);
     contenedor.replaceWith(input);
     if (siguiente && siguiente.parentNode === padre) padre.insertBefore(input, siguiente);
     for (const [atributo, valor] of atributosOriginales) {

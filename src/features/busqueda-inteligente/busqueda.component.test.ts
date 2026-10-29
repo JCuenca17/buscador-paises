@@ -132,6 +132,34 @@ describe("montarSugerencias", () => {
     expect(entrada().hasAttribute("aria-activedescendant")).toBe(false);
   });
 
+  it("cierra sugerencias al enviar manualmente el formulario y conserva la consulta", async () => {
+    escribir("espa");
+    await esperarActualizacion();
+
+    entrada().form!.requestSubmit();
+
+    expect(lista().hidden).toBe(true);
+    expect(entrada().getAttribute("aria-expanded")).toBe("false");
+    expect(entrada().value).toBe("espa");
+  });
+
+  it("ignora una carga de sugerencias que termina después del submit manual", async () => {
+    let resolverCatalogo!: (paises: readonly PaisSugerible[]) => void;
+    obtenerCatalogoMock.mockReturnValueOnce(
+      new Promise((resolver) => {
+        resolverCatalogo = resolver;
+      }),
+    );
+    escribir("espa");
+    entrada().form!.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+
+    resolverCatalogo(catalogo);
+    await new Promise((resolver) => setTimeout(resolver, 0));
+
+    expect(lista().hidden).toBe(true);
+    expect(entrada().getAttribute("aria-expanded")).toBe("false");
+  });
+
   it.each([
     ["sin-conexion", "No hay conexión. Revisa tu conexión a internet e inténtalo de nuevo."],
     ["tiempo-agotado", "El servicio tardó demasiado en responder. Inténtalo de nuevo."],

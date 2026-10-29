@@ -39,6 +39,8 @@ Resultados esperados:
 
 ## Revisión manual en navegador
 
+**Verificación realizada**: 2026-10-29 en `http://127.0.0.1:5173/`.
+
 1. Ejecutar `npm run dev` y abrir la URL local que informa Vite.
 2. Escribir `espa` y comprobar que aparece «España» sin más de cinco opciones.
 3. Elegir «España» con el ratón y comprobar que aparece su ficha, con el nombre español todavía
@@ -55,6 +57,27 @@ Resultados esperados:
 9. Probar texto sin coincidencias y campo vacío; se conservan los estados de la ficha base.
 10. Repetir un submit manual tras simular error y comprobar que la ficha muestra su mensaje y que
     «Reintentar» vuelve a resolver la consulta original.
+
+**Resultados comprobados**:
+
+- `espa` muestra «España»; elegir con ratón conserva ese texto en el campo y muestra la ficha Spain,
+   con capital Madrid.
+- `alem` permite seleccionar «Alemania» con ArrowDown y Enter; el campo conserva «Alemania» y la
+   ficha muestra Germany, con capital Berlin.
+- `c` muestra exactamente cinco opciones.
+- Enviar «España» con el botón «Buscar» resuelve Spain y cierra las sugerencias.
+- En una navegación instrumentada, cargar sugerencias y luego enviar «España» hizo una sola petición
+   a `/countries/capital`; la ficha mostró Spain/Madrid y el campo conservó «España».
+- Las etiquetas duplicadas se comprobaron manualmente. También se interceptó `/countries/capital`
+   para simular `sin-conexion`: apareció el mensaje correspondiente y «Reintentar sugerencias»
+   recuperó «España» sin enviar la ficha. Los otros tipos de error se cubren con pruebas simuladas.
+
+## Resultado automatizado
+
+Verificación final de integración: `npm test` pasó con 11 archivos y 141 pruebas; `npx tsc --noEmit`
+y `git diff --check` terminaron sin errores. Vitest informó la limitación conocida de jsdom para
+`HTMLFormElement.requestSubmit()` en una prueba; la suite terminó en éxito y los flujos reales de
+envío se verificaron en navegador.
 
 ## Comprobación de propiedad
 

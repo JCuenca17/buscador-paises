@@ -121,6 +121,23 @@ describe("montarFicha: historia 1", () => {
     expect(vi.mocked(buscarFicha).mock.calls[0]![0]).toBe("Peru");
   });
 
+  it("resuelve el nombre en español al enviar manualmente con botón o Enter", async () => {
+    const resolver = vi.fn(async (texto: string) => (texto === "España" ? "Spain" : texto));
+    document.body.replaceChildren();
+    montarFicha(document.body, resolver);
+    vi.mocked(buscarFicha).mockResolvedValue(encontrado(PERU));
+
+    buscarConBoton("España");
+    await esperar();
+    expect(resolver).toHaveBeenLastCalledWith("España");
+    expect(buscarFicha).toHaveBeenLastCalledWith("Spain", expect.any(Object));
+
+    buscarConEnter("Perú");
+    await esperar();
+    expect(resolver).toHaveBeenLastCalledWith("Perú");
+    expect(buscarFicha).toHaveBeenLastCalledWith("Perú", expect.any(Object));
+  });
+
   it("muestra «Buscando…» mientras espera y luego la ficha", async () => {
     const respuesta = diferida<ResultadoBusqueda>();
     vi.mocked(buscarFicha).mockReturnValue(respuesta.promesa);
@@ -510,6 +527,30 @@ describe("montarFicha: historia 3", () => {
     expect($("form").isConnected).toBe(true);
     expect($("form").hidden).toBe(false);
     expect(campo().isConnected).toBe(true);
+  });
+
+  it("si falla el resolvedor, muestra el error existente y Reintentar vuelve a resolver la consulta original", async () => {
+    const resolver = vi.fn().mockRejectedValueOnce(new Error("sin conexión"));
+    document.body.replaceChildren();
+    montarFicha(document.body, resolver);
+    vi.mocked(buscarFicha).mockResolvedValue(encontrado(PERU));
+
+    buscarConBoton("Perú");
+    await esperar();
+
+    expect(error().querySelector("p")!.textContent).toBe(
+      "No se pudo obtener la información del país. Inténtalo de nuevo.",
+    );
+    expect(botonReintentar()).toBeDefined();
+    expect(buscarFicha).not.toHaveBeenCalled();
+
+    resolver.mockResolvedValue("Peru");
+    botonReintentar()!.click();
+    await esperar();
+
+    expect(resolver).toHaveBeenLastCalledWith("Perú");
+    expect(buscarFicha).toHaveBeenCalledWith("Peru", expect.any(Object));
+    expect(ficha().hidden).toBe(false);
   });
 
   it("al iniciar otra búsqueda se borra el error anterior", async () => {

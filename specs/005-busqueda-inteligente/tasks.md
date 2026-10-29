@@ -16,9 +16,9 @@
 
 **Purpose**: Obtain the required owner approval before modifying the ficha base.
 
-**Status**: BLOCKED pending Jose's explicit approval. Do not modify the ficha files or begin dependent integration tasks until T001 is approved.
+**Status**: APPROVED FOR THIS IMPLEMENTATION SESSION per the user's explicit instruction; obtain Jose's formal PR review before merging.
 
-- [ ] T001 Obtain Jose's explicit approval for the query-resolver extension in `src/features/ficha/ficha.component.ts` and read-only shared-capitals accessor in `src/features/ficha/ficha.service.ts`; record approval before starting T006, T010, or T022-T023.
+- [X] T001 Treat approval for the minimal query-resolver/shared-capitals integration as granted for this implementation session by the user's explicit instruction; obtain and record Jose's formal PR review before merging.
 
 **Checkpoint**: Feature-local service and suggestion work may proceed independently; do not begin ficha-base integration until T001 is complete.
 
@@ -74,19 +74,19 @@
 
 **Purpose**: Connect manual form submissions and suggestion selection to the existing ficha flow without replacing it. This phase is blocked by T001.
 
-- [ ] T022 [US1] After T001 approval, add jsdom tests for the optional query-resolver contract in `src/features/ficha/ficha.component.test.ts`: no resolver preserves base behavior; resolver receives button and Enter submissions; resolver failures preserve the ficha's Spanish error/retry states.
-- [ ] T023 [US1] After T001 approval, add the optional query-resolver parameter to `montarFicha` in `src/features/ficha/ficha.component.ts`; resolve non-empty manual input before `buscarFicha` and preserve existing validation, loading, cancellation, rendering, and retry behavior.
-- [ ] T024 [P] [US2] Add an integration test in `src/features/busqueda-inteligente/busqueda.integracion.test.ts` proving mouse/keyboard selection and manual button/Enter submissions resolve ordinary and differentiated duplicate Spanish labels through the base flow.
-- [ ] T025 [US2] Connect the shared catalog consumer, resolver, and suggestion component in `src/main.ts` and import `src/features/busqueda-inteligente/busqueda.css`; do not create or replace the base form.
+- [X] T022 [US1] After T001 approval, add jsdom tests for the optional query-resolver contract in `src/features/ficha/ficha.component.test.ts`: no resolver preserves base behavior; resolver receives button and Enter submissions; resolver failures preserve the ficha's Spanish error/retry states.
+- [X] T023 [US1] After T001 approval, add the optional query-resolver parameter to `montarFicha` in `src/features/ficha/ficha.component.ts`; resolve non-empty manual input before `buscarFicha` and preserve existing validation, loading, cancellation, rendering, and retry behavior.
+- [X] T024 [P] [US2] Add an integration test in `src/features/busqueda-inteligente/busqueda.integracion.test.ts` proving mouse/keyboard selection and manual button/Enter submissions resolve ordinary and differentiated duplicate Spanish labels through the base flow.
+- [X] T025 [US2] Connect the shared catalog consumer, resolver, and suggestion component in `src/main.ts` and import `src/features/busqueda-inteligente/busqueda.css`; do not create or replace the base form.
 
 **Checkpoint**: Both stories work through the existing form; base loading/error/retry/ficha states remain owned by the ficha feature.
 
 ## Phase 6: Polish and Cross-Cutting Validation
 
-- [ ] T026 [P] Run all unit, component, integration, and fast-check tests with `npm test` and confirm all network calls are mocked; record results in `specs/005-busqueda-inteligente/quickstart.md`.
-- [ ] T027 [P] Run `npm run typecheck` and `npm run build`; resolve only feature-related failures in `src/features/busqueda-inteligente/` and approved integration changes in `src/features/ficha/ficha.component.ts`, `src/features/ficha/ficha.service.ts`, and `src/main.ts`.
-- [ ] T028 Manually validate Spanish lookup, five-result cap, duplicate-label differentiation, retryable suggestion errors, one shared capital-list download, keyboard-only selection, visible focus, and existing base error/retry behavior against `specs/005-busqueda-inteligente/quickstart.md`; record verification in `specs/005-busqueda-inteligente/quickstart.md`.
-- [ ] T029 Obtain PR reviews from Jose and Gabriel, recorded on the pull request for `specs/005-busqueda-inteligente/`, with comments stating what they reviewed, how they tested it, and their observations before merging.
+- [X] T026 [P] Run all unit, component, integration, and fast-check tests with `npm test` and confirm all network calls are mocked; record results in `specs/005-busqueda-inteligente/quickstart.md`.
+- [X] T027 [P] Run `npm run typecheck` and `npm run build`; resolve only feature-related failures in `src/features/busqueda-inteligente/` and approved integration changes in `src/features/ficha/ficha.component.ts`, `src/features/ficha/ficha.service.ts`, and `src/main.ts`.
+- [X] T028 Manually validate Spanish lookup, five-result cap, duplicate-label differentiation, retryable suggestion errors, one shared capital-list download, keyboard-only selection, visible focus, and existing base error/retry behavior against `specs/005-busqueda-inteligente/quickstart.md`; record verification in `specs/005-busqueda-inteligente/quickstart.md`.
+- [ ] T029 Obtain PR reviews from Jose and Gabriel, recorded on the pull request for `specs/005-busqueda-inteligente/`, with comments stating what they reviewed, how they tested it, and their observations before merging. (Pending human review; do not mark complete until both reviewers submit their comments.)
 
 ## Dependencies and Execution Order
 

@@ -13,6 +13,8 @@ const MENSAJES_ERROR = {
   "respuesta-invalida": "No se pudo obtener la información del país. Inténtalo de nuevo.",
 } as const;
 
+export type ResolverConsulta = (texto: string) => Promise<string>;
+
 function crear<K extends keyof HTMLElementTagNameMap>(
   etiqueta: K,
   texto?: string,
@@ -22,7 +24,7 @@ function crear<K extends keyof HTMLElementTagNameMap>(
   return elemento;
 }
 
-export function montarFicha(raiz: HTMLElement): void {
+export function montarFicha(raiz: HTMLElement, resolverConsulta?: ResolverConsulta): void {
   const main = crear("main");
   const titulo = crear("h1", "Buscador de países");
 
@@ -114,7 +116,25 @@ export function montarFicha(raiz: HTMLElement): void {
     error.replaceChildren();
     estado.textContent = "Buscando…";
 
-    const resultado = await buscarFicha(texto, { signal });
+    let textoResuelto = texto;
+    let resultado;
+    try {
+      textoResuelto = resolverConsulta ? await resolverConsulta(texto) : texto;
+      if (id !== idBusqueda) return;
+      resultado = await buscarFicha(textoResuelto, { signal });
+    } catch (error) {
+      if (id !== idBusqueda) return;
+      const tipoError =
+        error instanceof Error &&
+        "tipo" in error &&
+        typeof error.tipo === "string" &&
+        error.tipo in MENSAJES_ERROR
+          ? (error.tipo as keyof typeof MENSAJES_ERROR)
+          : "respuesta-invalida";
+      resultado = {
+        tipo: tipoError,
+      } as const;
+    }
     if (id !== idBusqueda) return;
 
     estado.textContent = "";
