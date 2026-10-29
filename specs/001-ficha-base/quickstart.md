@@ -35,7 +35,7 @@ Cobertura mínima de requisitos por archivo de pruebas:
    bandera.
 3. Buscar `Bolivia` → ficha con «Bandera no disponible» (la fuente no tiene su bandera).
 4. Buscar `Antarctica` → «Capital: no disponible».
-5. Buscar `España` → «No se encontró el país», sin «Reintentar».
+5. Buscar `Narnia` → «No se encontró el país», sin «Reintentar».
 6. Presionar «Buscar» con el campo vacío → «Escribe el nombre de un país»; al escribir, desaparece.
 7. Pegar más de 100 caracteres → el campo se queda con 100.
 
