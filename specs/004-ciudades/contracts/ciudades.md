@@ -16,6 +16,7 @@ seccionCiudades implementa SeccionFicha: id ciudades, titulo Ciudades, renderiza
 
 - Campo type=search con label «Filtrar ciudades» e id único. Se oculta cuando el país no tiene ciudades; sigue disponible cuando solo el filtro no encuentra coincidencias.
 - Contador role=status, aria-live=polite, aria-atomic=true: «N resultados. Mostrando A-B. Página P de Q» o «0 resultados».
+- Con una sola coincidencia, usar «1 resultado» en singular.
 - ul/li con nombres por textContent.
 - Anterior/Siguiente, type=button, disabled en límites; navegación oculta con una sola página.
 - Sin ciudades: «No hay ciudades registradas para este país».

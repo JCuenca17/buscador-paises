@@ -26,3 +26,9 @@ No se detectaron inconsistencias técnicas críticas, altas o medias entre los a
 | SC-001 a SC-005 | T007, T009, T011, T014 a T017 |
 
 13/13 requisitos y 5/5 criterios con tareas; 0 requisitos sin cobertura, 0 tareas de construcción sin propósito. Se distingue filtro vacío de cero coincidencias, catálogo válido de datos corruptos, y cancelación del consumidor de timeout de descarga. No se cambian constitución ni artefactos durante el pase de análisis.
+
+## Seguimiento final del 2026-10-29
+
+El informe anterior conserva los hallazgos de la preparación inicial. Estado actual: D1 resuelto, pues main integró constitución y ficha base y se incorporó a esta rama. Para G1 ya existe evidencia humana posterior: capturas y conformidad general de Paulo, y revisión de spec/plan/código con ensayos por José y Klismann. Se documenta el alcance real y se mantiene la desviación histórica de secuencia; no se afirma que Paulo leyera todo el código ni que revisara cada fase antes de generarse la siguiente.
+
+El nuevo pase de convergencia detectó C1 (LOW, singular «1 resultados»), se añadió T022 y se implementó «1 resultado». T016/T018 se verificaron con las capturas de Paulo y el reporte explícito de José de teclado nativo y vista 375 px. Tras implementación, la nueva comprobación de código no encontró brechas de construcción: ver converge.md. Las aprobaciones vigentes del último commit son una condición externa de integración, no se simulan mediante Converged.

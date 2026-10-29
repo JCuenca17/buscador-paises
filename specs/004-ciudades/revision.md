@@ -3,6 +3,8 @@
 **Responsable**: Paulo Hidalgo. **Fecha**: 2026-10-29.
 Este registro describe trabajo del agente y resultados observados. Paulo debe revisar y redactar su informe con sus palabras; no se atribuyen al estudiante revisiones ni decisiones que no constan en el chat.
 
+**Estado actual al cierre**: T016/T018 completadas con evidencia atribuida a Paulo y a las revisiones humanas del PR. main incorporado sin conflictos. C1 («1 resultados») corregido, 157 pruebas, typecheck y build pasan. Convergencia técnica: Converged (ver converge.md). La revisión histórica y sus limitaciones se conservan abajo; faltan aprobaciones vigentes del último commit antes de fusionar.
+
 ## Especificación y aclaración
 
 Se redactaron tres historias, 13 requisitos funcionales y cinco criterios de éxito a partir de la guía. El checklist técnico de especificación cumple 16/16. Se formularon cero preguntas de clarify: se documentaron como supuestos del agente sesión hasta recarga, filtro por subcadena, reinicio de página y ausencia de país como lista vacía. No hay respuestas humanas inventadas.
@@ -40,7 +42,7 @@ Se inspeccionaron src/api/http.ts, ficha/secciones.ts, ficha/tipos.ts, normaliza
 
 Las pruebas usan fetch simulado; ninguna prueba consulta CountriesNow. Cubren 0/1/20/21/40/41 ciudades, filtro Unicode/mayúsculas/subcadena, contador global, límites, recuperación, datos mal formados, HTML literal, caché, consumidores simultáneos, abort, timeout real del cliente con reloj simulado y preservación de capital/bandera en integración.
 
-### Validación visual pendiente
+### Validación visual pendiente en la primera entrega
 
 Se intentó abrir la app local con Browser Use: ERR_CONNECTION_TIMED_OUT. Al seleccionar Edge de Windows, la herramienta detuvo Computer Use porque no pudo determinar la URL del navegador con suficiente confianza para aplicar su política. No se continuó la automatización visual ni se sustituyó por otra vía de control del navegador. No se comprobaron visualmente móvil/escritorio ni activación nativa con Tab/Enter/Espacio. jsdom prueba estructura, eventos y foco, pero no demuestra esos comportamientos de navegador real. T016 queda pendiente y se añade T018 para el cierre de convergencia.
 
@@ -57,7 +59,7 @@ Se intentó abrir la app local con Browser Use: ERR_CONNECTION_TIMED_OUT. Al sel
 
 H2/H3 son decisiones preventivas del diseño, no fallos de código observados en una ejecución. H4 es una corrección real durante revisión del agente; no se atribuye a revisión humana. No hay capturas ni resultados manuales inventados.
 
-## Convergencia
+## Convergencia inicial
 
 Inspección contra 13 FR, 5 SC, las decisiones del plan, tareas y seis principios. No se detectaron brechas de código en listado, filtro, caché, validación, errores ni registro. SC-005/T016 están parcialmente verificados por jsdom y requieren navegador real. Resultado: **tasks_appended**, no «Converged». Se añade T018 al final de tasks.md sin reescribir tareas anteriores. G1 y D1 siguen siendo condiciones humanas/de entrega.
 
@@ -82,3 +84,37 @@ A petición de Paulo, se inició npm run dev en http://127.0.0.1:5173/ para que 
 - **Supuestos**: aún no hay aceptación explícita de sesión hasta recarga, filtro por subcadena ni ausencia de país/ciudades como vacío. No se infiere de «Ya» ni de una lectura rápida.
 
 G1 tiene evidencia parcial de revisión humana y un hallazgo concreto, pero sigue pendiente completar la revisión y los supuestos. T016/T018 siguen parciales: faltan interacción/teclado, anchos y error dentro de la app. El PR permanece en borrador y no se declara Converged. Se modificó documentación, sin cambiar código ejecutable ni resultados anteriores de las 157 pruebas.
+
+## Cierre con nueva evidencia humana (2026-10-29)
+
+La información de esta sección actualiza los estados históricos anteriores.
+
+### Capturas finales de Paulo
+
+1. Campo HUANCAYO: una coincidencia, Huancayo; ficha conserva capital Lima y bandera.
+2. Campo huáncayo: la misma coincidencia, verificando mayúsculas y tildes.
+3. Campo zzzzzz: cero resultados y mensaje «No hay ciudades que coincidan con el filtro», manteniendo campo y ficha.
+4. País asdfgh: «No se encontró el país», sin una ficha engañosa.
+5. Ficha Peru con error de ciudades: mensaje propio «No hay conexión para cargar las ciudades. Revisa tu conexión e inténtalo de nuevo.» y Reintentar; capital y bandera siguen visibles.
+6. DevTools con perfil Offline: capital e images figuran HTTP 200 desde disk cache; Disable cache está desmarcado y no aparece una petición countries. Esto es compatible con la reutilización de la base y la comprobación previa de navigator.onLine del cliente; no se presenta como una nueva descarga offline ni como evidencia del reintento exitoso.
+
+Paulo acompañó esas capturas con «Ya está. Creo que está bien. Ya te he pasado todas las capturas necesarias». Se registra conformidad general tras el resumen y los supuestos presentados; no se transforma en una afirmación de lectura íntegra del código ni en respuestas individuales de clarify.
+
+### Revisión humana del código y pruebas adicionales del PR
+
+Fuente: revisiones consultadas en https://github.com/JCuenca17/buscador-paises/pull/2 . Las siguientes son pruebas reportadas por sus autores, no ensayos ejecutados por el agente ni inferidos de capturas estáticas.
+
+- **José (JCuenca17)** documentó revisión de servicio, componente, CSS, pruebas, main.ts y specs; 157 pruebas; API real con Perú (82 ciudades, 5 páginas); filtro, cero coincidencias y paginación con Tab/Enter/Espacio; Monaco sin ciudades; Estados Unidos con 13718 ciudades y filtro en 9 ms; falla solo de ciudades con Reintentar; vista de 375 px y consola sin errores. Su observación menor «1 resultados» se reproduce en las capturas y se corrigió en T022. Indicó no haber probado 3G lento. Su aprobación anterior constaba DISMISSED por cambios posteriores; la evidencia de ensayos se conserva, pero no cuenta como aprobación vigente.
+- **Klismann (klismannSis)** documentó lectura de spec, plan y código; npm test, typecheck y app en navegador; páginas de 20, filtro sin tildes/mayúsculas y mensaje sin coincidencias. Su aprobación estaba vigente antes del nuevo cierre; al subir nuevos cambios se solicitará revisión del commit final.
+
+Con la evidencia conjunta se completan T016 y T018: interacción de filtro y estados por Paulo, y teclado/móvil/paginación/vacío/reintento reportados explícitamente por José. No se atribuye a Paulo el uso de teclado o la vista móvil solo por sus capturas. Timeout 10 s y respuesta inválida siguen cubiertos por pruebas deterministas; la prueba real de red fue perfil 3G y 9,76 s, no una certificación de 3G lento.
+
+### Revisión humana y secuencia de fases
+
+G1 cuenta ahora con revisión humana posterior y un hallazgo real corregido, además de la conformidad del responsable sobre el comportamiento. Se conserva la secuencia histórica de generación integral autorizada: la evidencia no demuestra revisión previa de Paulo antes de cada fase ni lectura completa del código por él. La revisión de código fue realizada por los compañeros mencionados. No se modifica la constitución ni se inventa esa revisión retrospectivamente.
+
+### Validación final y base integrada
+
+Se incorporó origin/main (dd8a669, PR #3) sin conflictos; incluye constitución ratificada (PR #1) y ficha base. La rama no depende ya de un PR de base pendiente. npm test: 157/157 en 10 archivos; npx tsc --noEmit: 0; npm run build: 0, 13 módulos y JS 10,52 kB (gzip 4,02 kB). Sin cambios en dependencias, ficha ni cliente HTTP por parte de ciudades.
+
+Se ejecutó de nuevo la evaluación del skill speckit-converge después de completar T022 y las tareas manuales: 13 FR, 5 SC, 11 escenarios de aceptación, 8 decisiones de diseño, 22 tareas y 6 principios examinados; cero brechas de código restantes. Resultado técnico: **Converged**. Las aprobaciones vigentes del último commit siguen siendo condición externa para fusionar; no se realiza merge del PR desde el agente.

@@ -27,9 +27,9 @@ Añadir `seccionCiudades` mediante registrarSeccion en src/main.ts antes de mont
 | III. Capas | Conforme: solo ciudades y registro en main.ts; no editar ficha ni src/api. |
 | IV. Pruebas | Planificadas: servicio, componente, integración y propiedades, red simulada. |
 | V. Español y accesibilidad | Label, controles nativos, estado anunciado, foco y textContent. |
-| VI. Revisión humana | Pendiente: Paulo debe revisar los artefactos; PR para Klismann y José con dos aprobaciones comentadas. No se fusionará aquí. |
+| VI. Revisión humana | Evidencia actual: conformidad de Paulo tras pruebas y resumen, y revisiones humanas del código por José y Klismann en PR #2. La secuencia histórica de revisión fase por fase no se certifica retrospectivamente. Se requieren dos aprobaciones vigentes del último commit; no se fusionará aquí. |
 
-La preparación integral fue solicitada por Paulo; no constituye evidencia de revisión humana fase por fase. No se marca esa obligación cumplida por el agente ni se cambia la constitución. Registrar esta limitación en revision.md y en el PR.
+La preparación integral fue solicitada por Paulo; no constituye evidencia de revisión humana fase por fase. Las revisiones posteriores y su alcance están registradas en revision.md y en el PR; no se atribuye a Paulo lectura íntegra del código ni se cambia la constitución.
 
 ## Project Structure
 
@@ -60,8 +60,8 @@ src/main.ts  # importar y registrar sección
 
 ## Delivery and Dependency
 
-Se parte de origin/001-ficha-base (453da94), porque main aún no tiene la app. Publicar PR en borrador hacia main con esa dependencia explícita; mientras esté pendiente, el diff incluye commits de José. Si la ficha se integra durante el trabajo, actualizar con main. No fusionar ni aprobar PR ajenos.
+La rama se inició en origin/001-ficha-base (453da94), cuando main aún no tenía la app. La dependencia quedó resuelta: main integró la constitución en PR #1 y la ficha base en PR #3; se incorporó origin/main (dd8a669) a 004-ciudades mediante merge, sin conflictos. El PR #2 queda solo con el cambio de ciudades respecto a la base integrada y está listo para revisión. No fusionar ni aprobar PR ajenos.
 
 ## Complexity Tracking
 
-Sin excepciones técnicas ni dependencias nuevas. Revisión humana y ficha base integrada son condiciones pendientes para llegar a main.
+Sin excepciones técnicas ni dependencias nuevas. La ficha base está integrada; la revisión humana posterior está documentada con su alcance. Para integrar ciudades faltan dos aprobaciones vigentes del último commit y conversaciones resueltas.

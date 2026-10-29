@@ -38,7 +38,7 @@ describe("vista de ciudades", () => {
   it.each([0, 1, 20, 21, 40, 41])("muestra máximo 20 ciudades de %i, contador global y límites", async (total) => {
     await montar(nombres(total));
     expect(lista()).toEqual(nombres(total).slice(0, 20));
-    expect(seccion.querySelector('[role="status"]')?.textContent).toContain(`${total} resultados`);
+    expect(seccion.querySelector('[role="status"]')?.textContent).toContain(`${total} ${total === 1 ? "resultado" : "resultados"}`);
     expect(boton("Anterior").disabled).toBe(true);
     expect(boton("Siguiente").disabled).toBe(total <= 20);
     expect(seccion.querySelector("h3")?.textContent).toBe("Ciudades");
@@ -79,7 +79,7 @@ describe("vista de ciudades", () => {
     for (const filtro of ["HUANUCO", "huánuco", "hua\u0301nuco", " uan "]) {
       filtrar(filtro);
       expect(lista()).toEqual(["Huánuco"]);
-      expect(seccion.querySelector('[role="status"]')?.textContent).toContain("1 resultados. Mostrando 1-1. Página 1 de 1");
+      expect(seccion.querySelector('[role="status"]')?.textContent).toContain("1 resultado. Mostrando 1-1. Página 1 de 1");
     }
     expect(document.activeElement).toBe(campo());
     expect(servicio).toHaveBeenCalledTimes(1);

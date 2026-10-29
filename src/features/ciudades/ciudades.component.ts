@@ -75,7 +75,7 @@ export const seccionCiudades: SeccionFicha = {
       const visibles = coincidencias.slice(inicio, inicio + TAMANO_PAGINA);
       lista.replaceChildren(...visibles.map((nombre) => crear("li", nombre)));
       estado.textContent = total === 0 ? "0 resultados"
-        : `${total} resultados. Mostrando ${inicio + 1}-${inicio + visibles.length}. Página ${pagina} de ${paginas}`;
+        : `${total} ${total === 1 ? "resultado" : "resultados"}. Mostrando ${inicio + 1}-${inicio + visibles.length}. Página ${pagina} de ${paginas}`;
       vacio.textContent = ciudades.length === 0 ? "No hay ciudades registradas para este país"
         : total === 0 ? "No hay ciudades que coincidan con el filtro" : "";
       vacio.hidden = total !== 0;

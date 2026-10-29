@@ -2,7 +2,7 @@
 
 **Feature Branch**: `004-ciudades`
 **Created**: 2026-10-29
-**Status**: Propuesta para revisión humana
+**Status**: Implementada y validada; pendiente de aprobaciones vigentes del PR
 **Responsable**: Paulo Hidalgo
 **Input**: Agregar a la ficha las ciudades del país, orden alfabético, filtro inmediato sin distinguir mayúsculas ni tildes, contador y páginas de 20 ciudades. Mostrar mensajes cuando no haya ciudades o coincidencias.
 
@@ -106,3 +106,5 @@ Como visitante quiero entender los fallos y volver a intentar sin perder la fich
 ### Session 2026-10-29
 
 No se formularon preguntas: la guía y la revisión de la ficha resolvieron el alcance. Los valores por defecto anteriores son decisiones propuestas por el agente, pendientes de revisión de Paulo; no son respuestas ni aprobaciones humanas.
+
+Revisión posterior: tras presentar el resumen, los tres supuestos y los ensayos, Paulo aportó capturas y manifestó «Ya está. Creo que está bien». Se registra esa conformidad general con la propuesta actual, sin inventar respuestas individuales de clarify ni afirmar lectura íntegra del código. José y Klismann documentaron revisión del spec, plan y código en PR #2. La dependencia de la ficha base se resolvió al incorporar main (dd8a669).
