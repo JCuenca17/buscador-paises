@@ -54,3 +54,8 @@ Pendientes fuera de las tareas de construcción: revisión de Paulo de los artef
 ## Phase 7: Convergence
 
 - [ ] T018 Completar la validación de navegador de T016 con URL verificada, anchos móvil/escritorio y teclado nativo; registrar resultados observados en specs/004-ciudades/revision.md per SC-005 y plan: accesibilidad (partial).
+
+## Phase 8: Review refinements
+
+- [x] T019 Corregir puntos finales de errores y ocultar filtro sin ciudades en src/features/ciudades/ciudades.component.ts; mantenerlo para cero coincidencias y conservar foco accesible tras reintento vacío.
+- [x] T020 Verificar ajustes con src/features/ciudades/ciudades.component.test.ts, npm test, npx tsc --noEmit y npm run build; registrar evidencia en specs/004-ciudades/revision.md.

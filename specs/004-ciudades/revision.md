@@ -30,9 +30,10 @@ Se inspeccionaron src/api/http.ts, ficha/secciones.ts, ficha/tipos.ts, normaliza
 | npm test antes de ciudades | 109 pruebas en 6 archivos pasan. |
 | Servicio/propiedades iniciales | 27 pruebas pasan. |
 | Componente | 16 pruebas pasan. |
-| npm test final | 156 pruebas en 10 archivos pasan: 109 base + 47 de ciudades. |
+| npm test al publicar el PR | 156 pruebas en 10 archivos pasan: 109 base + 47 de ciudades. |
+| npm test tras comentario de revisión | 157 pruebas en 10 archivos pasan: 109 base + 48 de ciudades. |
 | npx tsc --noEmit | Código de salida 0, sin diagnósticos. |
-| npm run build | Código de salida 0; 13 módulos; JS 10.47 kB, gzip 4.01 kB. |
+| npm run build tras comentario | Código de salida 0; 13 módulos; JS 10.50 kB, gzip 4.01 kB. |
 | git diff --check | Sin errores de whitespace. |
 | npm run dev -- --host 127.0.0.1 | Vite inicia correctamente en http://127.0.0.1:5173/. |
 | API exploratoria fuera de pruebas | /countries respondió error:false, 227 países y 82 ciudades para PER en ese momento. |
@@ -65,3 +66,9 @@ Inspección contra 13 FR, 5 SC, las decisiones del plan, tareas y seis principio
 Se entrega en borrador hacia main, por la dependencia y la validación manual pendiente. Revisores previstos: klismannSis (Klismann) y JCuenca17 (José). Mientras main no integre la base, el diff incluye también los commits de José; comparar 001-ficha-base...004-ciudades permite aislar ciudades. No se ejecuta merge ni se aprueba trabajo ajeno.
 
 Paulo debe revisar spec/plan/tareas/código y completar los casos de quickstart.md. Después de integrar la base y cerrar T016/T018, actualizar con main, repetir comprobaciones y marcar listo para revisión. Las dos aprobaciones del equipo deben incluir el comentario exigido por la guía. No se han recibido ni inventado esas aprobaciones.
+
+## Seguimiento del comentario de revisión (2026-10-29)
+
+Paulo compartió un comentario que pide completar G1, T016/T018 y convergencia, y señala dos detalles de interfaz. El agente corrigió los errores para terminar en punto y ocultó el filtro si el país tiene cero ciudades. El filtro permanece disponible si existen ciudades pero ninguna coincide. También se ajustó el foco del reintento vacío al estado y se reforzaron las pruebas del componente: ocultación del filtro, punto final y foco tras reintentar sin ciudades. Pasan las 157 pruebas, typecheck y build.
+
+A petición de Paulo, se inició npm run dev en http://127.0.0.1:5173/ para que pueda realizar él mismo la revisión. Se verificó respuesta HTTP 200 y título Buscador de países; esto confirma que el servidor responde, no una prueba visual ni de teclado. No se han recibido aún resultados de Paulo ni aceptación explícita de los supuestos (sesión hasta recarga, filtro por subcadena y país ausente/sin ciudades como vacío). G1 y T016/T018 continúan pendientes; el PR sigue en borrador y no se declara Converged.

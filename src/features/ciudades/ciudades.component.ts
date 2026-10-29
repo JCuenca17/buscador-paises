@@ -5,9 +5,9 @@ import "./ciudades.css";
 const TAMANO_PAGINA = 20;
 let siguienteId = 0;
 const ERRORES = {
-  "sin-conexion": "No hay conexión para cargar las ciudades. Revisa tu conexión e inténtalo de nuevo",
-  "tiempo-agotado": "El servicio tardó demasiado en cargar las ciudades. Inténtalo de nuevo",
-  "respuesta-invalida": "No se pudieron obtener las ciudades. La respuesta del servicio no es válida",
+  "sin-conexion": "No hay conexión para cargar las ciudades. Revisa tu conexión e inténtalo de nuevo.",
+  "tiempo-agotado": "El servicio tardó demasiado en cargar las ciudades. Inténtalo de nuevo.",
+  "respuesta-invalida": "No se pudieron obtener las ciudades. La respuesta del servicio no es válida.",
 } as const;
 
 function crear<K extends keyof HTMLElementTagNameMap>(etiqueta: K, texto?: string): HTMLElementTagNameMap[K] {
@@ -131,9 +131,9 @@ export const seccionCiudades: SeccionFicha = {
       ciudades = resultado.ciudades;
       pagina = 1;
       filtro.value = "";
-      controles.hidden = false;
+      controles.hidden = ciudades.length === 0;
       actualizar();
-      if (enfocarFiltro) filtro.focus();
+      if (enfocarFiltro) (controles.hidden ? estado : filtro).focus();
     }
 
     await cargar();

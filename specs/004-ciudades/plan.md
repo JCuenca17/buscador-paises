@@ -56,6 +56,7 @@ src/main.ts  # importar y registrar sección
 5. Componente conserva h3 recibido y añade cuerpo propio. Filtro y botones persisten durante paginado; edición vuelve a página 1. Label con id único, ul/li, contador role=status aria-live=polite aria-atomic=true. Botones nativos disabled en extremos; si el botón enfocado queda deshabilitado, pasar foco al control disponible.
 6. Error local con role=alert y Reintentar; mantener ficha. Comprobar signal antes de escrituras asíncronas y manejar errores inesperados como respuesta inválida. Al reintentar llevar foco a carga y luego al filtro.
 7. CSS local importado por componente, selectores limitados a .ciudades.
+8. Ajustes del comentario de revisión compartido por Paulo: mensajes de error con punto final y filtro oculto cuando no existen ciudades para el país. Si el filtro no encuentra coincidencias, permanece visible para poder editarlo. Tras reintentar con lista vacía, llevar foco al estado, no al campo oculto.
 
 ## Delivery and Dependency
 

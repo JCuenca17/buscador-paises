@@ -42,6 +42,7 @@ describe("vista de ciudades", () => {
     expect(boton("Anterior").disabled).toBe(true);
     expect(boton("Siguiente").disabled).toBe(total <= 20);
     expect(seccion.querySelector("h3")?.textContent).toBe("Ciudades");
+    expect(seccion.querySelector<HTMLElement>(".ciudades__filtro")?.hidden).toBe(total === 0);
     if (total === 0) expect(seccion.textContent).toContain("No hay ciudades registradas para este país");
   });
 
@@ -118,10 +119,20 @@ describe("carga y recuperación", () => {
     servicio.mockResolvedValueOnce({ tipo }).mockResolvedValueOnce({ tipo: "disponibles", ciudades: ["Lima"] });
     await seccionCiudades.renderizar(pais, seccion, new AbortController().signal);
     expect(seccion.querySelector('[role="alert"]')?.textContent).toContain(mensaje);
+    expect(seccion.querySelector('[role="alert"]')?.textContent?.endsWith(".")).toBe(true);
     boton("Reintentar").click();
     await vi.waitFor(() => expect(lista()).toEqual(["Lima"]));
     expect(servicio).toHaveBeenCalledTimes(2);
     expect(document.activeElement).toBe(campo());
+  });
+
+  it("al reintentar sin ciudades lleva el foco al estado y oculta el filtro", async () => {
+    servicio.mockResolvedValueOnce({ tipo: "sin-conexion" }).mockResolvedValueOnce({ tipo: "disponibles", ciudades: [] });
+    await seccionCiudades.renderizar(pais, seccion, new AbortController().signal);
+    boton("Reintentar").click();
+    await vi.waitFor(() => expect(seccion.querySelector('[role="status"]')?.textContent).toBe("0 resultados"));
+    expect(seccion.querySelector<HTMLElement>(".ciudades__filtro")?.hidden).toBe(true);
+    expect(document.activeElement).toBe(seccion.querySelector('[role="status"]'));
   });
 
   it("muestra carga y descarta respuesta tardía al cancelar", async () => {
