@@ -1,6 +1,6 @@
 <!--
 Informe de impacto de sincronización
-- Cambio de versión: plantilla sin versión → 1.0.0 (adopción inicial, aún no ratificada)
+- Cambio de versión: plantilla sin versión → 1.0.0 (adopción inicial, ratificada el 2026-10-29)
 - Correcciones de la revisión humana (antes de ratificar, se mantiene 1.0.0):
   - II. Fuente de datos única: se aclara que solo las llamadas de datos (fetch) van a
     CountriesNow; se permiten imágenes y enlaces cuyas URLs vienen en la respuesta de la API
@@ -13,7 +13,7 @@ Informe de impacto de sincronización
     integrantes distintos del autor; cada aprobación incluye un comentario de revisión que
     indica qué se revisó, cómo se probó y las observaciones encontradas (antes: un integrante
     para cualquier pull request y para las enmiendas, sin comentario obligatorio).
-  - Fecha de ratificación: pendiente hasta que el equipo apruebe el pull request.
+  - Fecha de ratificación: 2026-10-29, el día en que el equipo aprueba el pull request.
 - Principios definidos:
   - [PRINCIPLE_1_NAME] → I. Simplicidad
   - [PRINCIPLE_2_NAME] → II. Fuente de datos única
@@ -24,9 +24,7 @@ Informe de impacto de sincronización
 - Secciones añadidas: Restricciones técnicas, Flujo de desarrollo y revisión
 - Secciones eliminadas: ninguna
 - Plantillas dependientes: no se modifican (leen la constitución en tiempo de ejecución)
-- TODO diferidos:
-  - TODO(RATIFICATION_DATE): se fija con la fecha en que se apruebe el pull request de la
-    constitución; en ese momento también se actualiza «Última enmienda».
+- TODO diferidos: ninguno
 -->
 
 # Constitución del Buscador de Países
@@ -178,5 +176,4 @@ pero no sustituye el criterio ni la revisión entre pares.
 - **Cumplimiento**: cada `plan.md` y cada revisión de pull request DEBEN verificar el cumplimiento
   de los principios. Toda complejidad adicional DEBE estar justificada por escrito en el plan.
 
-**Versión**: 1.0.0 | **Ratificada**: TODO(RATIFICATION_DATE): pendiente hasta que el equipo
-apruebe el pull request | **Última enmienda**: 2026-10-29
+**Versión**: 1.0.0 | **Ratificada**: 2026-10-29 | **Última enmienda**: 2026-10-29
