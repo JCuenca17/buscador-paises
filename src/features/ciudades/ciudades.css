@@ -1,0 +1,30 @@
+.ciudades__filtro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ciudades__lista {
+  padding-left: 1.5rem;
+  overflow-wrap: anywhere;
+}
+
+.ciudades__paginas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ciudades button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.ciudades [role="alert"] {
+  color: #cf222e;
+}
+
+.ciudades [role="status"]:focus-visible {
+  outline: 3px solid #0969da;
+  outline-offset: 2px;
+}

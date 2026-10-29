@@ -1,19 +1,23 @@
 import "./styles.css";
 import { montarFicha } from "./features/ficha/ficha.component";
+import { registrarSeccion } from "./features/ficha/secciones";
+import { seccionCiudades } from "./features/ciudades/ciudades.component";
 import { obtenerCatalogoPaises, resolverPais } from "./features/busqueda-inteligente/busqueda.service";
 import { montarSugerencias } from "./features/busqueda-inteligente/busqueda.component";
 import "./features/busqueda-inteligente/busqueda.css";
 
-// Punto de composición. Las otras funcionalidades registran aquí su sección de la ficha, antes
-// de montarla, con registrarSeccion(...) de "./features/ficha/secciones"
-// (specs/001-ficha-base/contracts/secciones-ficha.md). Por ejemplo:
-//   registrarSeccion(seccionPoblacion);
+// Punto de composición: Registrar la sección de ciudades de Paulo
+registrarSeccion(seccionCiudades);
 
+// Montar la ficha base con el resolver de búsqueda inteligente
 const raiz = document.getElementById("app")!;
 montarFicha(raiz, async (texto) => resolverPais(await obtenerCatalogoPaises(), texto) ?? texto);
 
+// Montar el componente de sugerencias inteligentes
 const campoBusqueda = raiz.querySelector<HTMLInputElement>("#nombre-pais")!;
-montarSugerencias(campoBusqueda, {
-	obtenerCatalogo: obtenerCatalogoPaises,
-	alSeleccionar: () => campoBusqueda.form?.requestSubmit(),
-});
+if (campoBusqueda) {
+  montarSugerencias(campoBusqueda, {
+    obtenerCatalogo: obtenerCatalogoPaises,
+    alSeleccionar: () => campoBusqueda.form?.requestSubmit(),
+  });
+}
