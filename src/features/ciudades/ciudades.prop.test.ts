@@ -18,6 +18,13 @@ describe("propiedades de ciudades", () => {
     }));
   });
 
+  it("mantiene idempotencia con marcas combinadas entre espacios", () => {
+    fc.assert(fc.property(fc.array(fc.constantFrom("a", "á", "ñ", " ", "\t", "\u0301", "\u0308")), (letras) => {
+      const texto = letras.join("");
+      expect(normalizarFiltro(normalizarFiltro(texto))).toBe(normalizarFiltro(texto));
+    }));
+  });
+
   it("validar valores arbitrarios no lanza y solo admite cadenas no vacías", () => {
     fc.assert(fc.property(fc.jsonValue(), (cities) => {
       const fila = { iso2: "PE", iso3: "PER", country: "Peru", cities };

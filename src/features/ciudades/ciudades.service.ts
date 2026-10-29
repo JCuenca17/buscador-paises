@@ -18,7 +18,7 @@ const ordenEspanol = new Intl.Collator("es", { sensitivity: "base" });
 
 /** Complementa la normalización de ficha sin cambiar su contrato de nombres de países. */
 export function normalizarFiltro(texto: string): string {
-  return normalizarNombre(texto).normalize("NFD").replace(/\p{M}/gu, "");
+  return normalizarNombre(texto.normalize("NFD").replace(/\p{M}/gu, ""));
 }
 
 function codigoValido(valor: unknown, longitud: number): valor is string {

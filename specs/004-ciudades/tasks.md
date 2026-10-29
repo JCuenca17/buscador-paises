@@ -39,9 +39,9 @@ Meta: errores distintos y reintento sin perder ficha; una descarga concurrente.
 ## Phase 6: Integration and Polish
 
 - [x] T014 Registrar sección desde src/main.ts y probar ficha real, nueva búsqueda y errores locales en src/features/ciudades/ciudades.integracion.test.ts (FR-001, FR-007, FR-010).
-- [ ] T015 Ejecutar npm test, npx tsc --noEmit y npm run build; documentar resultados en specs/004-ciudades/revision.md.
+- [x] T015 Ejecutar npm test, npx tsc --noEmit y npm run build; documentar resultados en specs/004-ciudades/revision.md.
 - [ ] T016 Validar en navegador lista, teclado, filtro, navegación, vacío/no encontrado y anchos móvil/escritorio; registrar evidencia y límites en specs/004-ciudades/revision.md (SC-005).
-- [ ] T017 Contrastar código con FR-001 a FR-013, SC-001 a SC-005, plan y tareas; registrar convergencia y hallazgos reales en specs/004-ciudades/revision.md.
+- [x] T017 Contrastar código con FR-001 a FR-013, SC-001 a SC-005, plan y tareas; registrar convergencia y hallazgos reales en specs/004-ciudades/revision.md.
 
 ## Dependencies and Strategy
 
@@ -50,3 +50,7 @@ Setup -> Foundational -> US1 -> US2 -> US3 -> Integration. MVP: US1. Los ensayos
 ## Human Gates
 
 Pendientes fuera de las tareas de construcción: revisión de Paulo de los artefactos y cambios, integración aprobada de la ficha base, y dos aprobaciones con comentario de Klismann y José. No se interpreta una casilla técnica como sustituto de esas condiciones.
+
+## Phase 7: Convergence
+
+- [ ] T018 Completar la validación de navegador de T016 con URL verificada, anchos móvil/escritorio y teclado nativo; registrar resultados observados en specs/004-ciudades/revision.md per SC-005 y plan: accesibilidad (partial).
