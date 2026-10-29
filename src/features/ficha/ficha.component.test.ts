@@ -610,3 +610,39 @@ describe("montarFicha: foco tras «Reintentar»", () => {
     expect(estado().textContent).toBe("Buscando…");
   });
 });
+
+describe("montarFicha: «Reintentar» después de una validación", () => {
+  beforeEach(() => {
+    vi.mocked(buscarFicha).mockReset();
+    reiniciarSecciones();
+    document.body.replaceChildren();
+    montarFicha(document.body);
+  });
+
+  it("al pulsar «Reintentar» se borran el mensaje de validación y aria-invalid (FR-009)", async () => {
+    vi.mocked(buscarFicha)
+      .mockResolvedValueOnce({ tipo: "sin-conexion" })
+      .mockResolvedValueOnce(encontrado(PERU));
+
+    buscarConBoton("Peru");
+    await esperar();
+    // Enviar el campo vacío no es una búsqueda nueva: el error y «Reintentar» se conservan.
+    buscarConBoton("");
+    expect($("#validacion-pais").textContent).toBe("Escribe el nombre de un país");
+    expect(campo().getAttribute("aria-invalid")).toBe("true");
+
+    const reintentar = [...document.querySelectorAll("[data-error] button")].find(
+      (b) => b.textContent === "Reintentar",
+    ) as HTMLButtonElement;
+    reintentar.click();
+
+    expect(estado().textContent).toBe("Buscando…");
+    expect($("#validacion-pais").textContent).toBe("");
+    expect(campo().hasAttribute("aria-invalid")).toBe(false);
+
+    await esperar();
+    expect(vi.mocked(buscarFicha).mock.calls[1]![0]).toBe("Peru");
+    expect(ficha().hidden).toBe(false);
+    expect($("#validacion-pais").textContent).toBe("");
+  });
+});

@@ -71,7 +71,7 @@ export function buscarEnIndice(indice: IndicePaises, texto: string): ResultadoIn
     tipo: "encontrado",
     pais: {
       nombre: name.trim(),
-      capital: capital === "" ? null : capital,
+      capital: capital.trim() === "" ? null : capital,
       bandera: typeof flag === "string" && flag.startsWith("https:") ? flag : null,
       iso2,
       iso3,

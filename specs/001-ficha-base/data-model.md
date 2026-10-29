@@ -12,7 +12,7 @@ No hay almacenamiento persistente. Todas las entidades viven en memoria durante 
 |-------|------|-------|--------------|
 | `name` | texto no vacío | puede traer espacios extremos | el elemento se ignora |
 | `iso2` | texto no vacío | puede repetirse entre elementos | el elemento se ignora |
-| `capital` | texto | puede ser `""` (capital inexistente) | `respuesta-invalida` al buscar ese país |
+| `capital` | texto | puede ser `""` o solo espacios (capital inexistente) | `respuesta-invalida` al buscar ese país |
 | `iso3` | texto no vacío | lo usan otras funcionalidades | `respuesta-invalida` al buscar ese país |
 
 ### ElementoBandera — `GET /countries/flag/images`
@@ -45,7 +45,7 @@ Es lo que repite «Reintentar» (FR-013).
 | Campo | Tipo | Origen |
 |-------|------|--------|
 | `nombre` | texto | `ElementoCapital.name` sin espacios extremos, tal como lo entrega la fuente |
-| `capital` | texto o `null` | `ElementoCapital.capital`; `""` → `null` |
+| `capital` | texto o `null` | `ElementoCapital.capital`; vacía tras `trim()` (`""` o solo espacios) → `null`; si no, se usa tal cual |
 | `bandera` | texto (URL) o `null` | `ElementoBandera.flag` con el mismo `iso2`; sin coincidencia o sin `https:` → `null` |
 | `iso2` | texto | `ElementoCapital.iso2`; lo usan las secciones de otras funcionalidades |
 | `iso3` | texto | `ElementoCapital.iso3`; lo usan las secciones de otras funcionalidades (por ejemplo, la lista de población de CountriesNow se relaciona por `iso3`) |

@@ -90,7 +90,6 @@ export function montarFicha(raiz: HTMLElement): void {
       campo.setAttribute("aria-invalid", "true");
       return;
     }
-    limpiarValidacion();
     void buscar(campo.value);
   });
 
@@ -108,6 +107,8 @@ export function montarFicha(raiz: HTMLElement): void {
     const { signal } = controlador;
     const id = ++idBusqueda;
 
+    // Toda búsqueda iniciada (también por «Reintentar») retira los mensajes anteriores (FR-009).
+    limpiarValidacion();
     ficha.hidden = true;
     secciones.replaceChildren();
     error.replaceChildren();

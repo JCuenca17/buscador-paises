@@ -44,6 +44,22 @@ describe("buscarFicha: casos normales", () => {
     expect(resultado).toMatchObject({ tipo: "encontrado", pais: { capital: null } });
   });
 
+  it.each(["   ", "\t", " \n "])(
+    "devuelve capital null si la capital solo tiene espacios (%j)",
+    async (capital) => {
+      vi.stubGlobal(
+        "fetch",
+        simularFetch({
+          [RUTA_CAPITALES]: sobre(CAPITALES.map((c) => (c.iso2 === "PE" ? { ...c, capital } : c))),
+          [RUTA_BANDERAS]: sobre(BANDERAS),
+        }),
+      );
+
+      const resultado = await buscarFicha("Peru");
+      expect(resultado).toMatchObject({ tipo: "encontrado", pais: { nombre: "Peru", capital: null } });
+    },
+  );
+
   it("devuelve bandera null si el país no está en la lista de banderas (Bolivia)", async () => {
     vi.stubGlobal("fetch", simularFetch());
 

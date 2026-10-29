@@ -339,3 +339,8 @@ T018 src/features/ficha/secciones.ts
   T019 estén integrados en `main`.
 - Hacer un commit al terminar cada tarea o grupo lógico; detenerse en cada punto de control para
   validar la historia por separado.
+
+## Phase 7: Convergence
+
+- [X] T033 Agregar a `src/features/ficha/ficha.component.test.ts` una prueba en la que, tras un error con «Reintentar», se envía el campo vacío (aparece la validación) y luego se pulsa «Reintentar»: `#validacion-pais` queda vacío y el campo sin `aria-invalid`; después hacer que toda búsqueda iniciada (también por «Reintentar») borre la validación en `src/features/ficha/ficha.component.ts` per FR-009 (partial)
+- [X] T034 Agregar a `src/features/ficha/ficha.service.test.ts` un caso con `capital` de solo espacios → `capital: null`, y tratar en `buscarEnIndice` como inexistente toda capital vacía tras `trim()` per FR-015 / caso límite «Capital no disponible» (partial)
