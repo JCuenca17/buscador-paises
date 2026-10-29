@@ -10,9 +10,13 @@
 
 **Purpose**: Confirm project setup. The SPA, Vite, TypeScript, Vitest, jsdom and fast-check are already configured; no dependency or scaffolding task is needed.
 
+**Status**: COMPLETE. Existing project setup verified; `npm test` and `npx tsc --noEmit` pass. No setup task was required.
+
 ## Phase 2: Foundational Gate
 
 **Purpose**: Obtain the required owner approval before modifying the ficha base.
+
+**Status**: BLOCKED pending Jose's explicit approval. Do not modify the ficha files or begin dependent integration tasks until T001 is approved.
 
 - [ ] T001 Obtain Jose's explicit approval for the query-resolver extension in `src/features/ficha/ficha.component.ts` and read-only shared-capitals accessor in `src/features/ficha/ficha.service.ts`; record approval before starting T006, T010, or T022-T023.
 
