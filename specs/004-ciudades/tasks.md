@@ -4,20 +4,20 @@ Basado en spec.md, plan.md, data-model.md y contracts/ciudades.md. Pruebas oblig
 
 ## Phase 1: Setup
 
-- [ ] T001 Comprobar dependencias existentes y las 109 pruebas base de package.json; no agregar paquetes.
-- [ ] T002 Registrar contrato de integración y dependencia de 001-ficha-base en specs/004-ciudades/plan.md.
+- [x] T001 Comprobar dependencias existentes y las 109 pruebas base de package.json; no agregar paquetes.
+- [x] T002 Registrar contrato de integración y dependencia de 001-ficha-base en specs/004-ciudades/plan.md.
 
 ## Phase 2: Foundational
 
-- [ ] T003 Probar normalización idempotente, equivalencia Unicode y validación arbitraria en src/features/ciudades/ciudades.prop.test.ts.
-- [ ] T004 Implementar normalizarFiltro, índice ISO3 y validación en src/features/ciudades/ciudades.service.ts: «iso2: cadena de dos letras; iso3: cadena de tres letras», «country: cadena no vacía tras trim», «cities: arreglo de cadenas no vacías tras trim» (FR-002, FR-004, FR-013).
+- [x] T003 Probar normalización idempotente, equivalencia Unicode y validación arbitraria en src/features/ciudades/ciudades.prop.test.ts.
+- [x] T004 Implementar normalizarFiltro, índice ISO3 y validación en src/features/ciudades/ciudades.service.ts: «iso2: cadena de dos letras; iso3: cadena de tres letras», «country: cadena no vacía tras trim», «cities: arreglo de cadenas no vacías tras trim» (FR-002, FR-004, FR-013).
 
 ## Phase 3: US1 - Consultar ciudades
 
 Meta: lista ordenada con navegación y vacíos; ensayo independiente con 21 nombres.
 
-- [ ] T005 [US1] Probar ruta, identidad ISO3, orden, vacíos y fila mal formada en src/features/ciudades/ciudades.service.test.ts (FR-001, FR-002, FR-006, FR-013).
-- [ ] T006 [US1] Implementar obtenerCiudades y catálogo en src/features/ciudades/ciudades.service.ts (FR-009).
+- [x] T005 [US1] Probar ruta, identidad ISO3, orden, vacíos y fila mal formada en src/features/ciudades/ciudades.service.test.ts (FR-001, FR-002, FR-006, FR-013).
+- [x] T006 [US1] Implementar obtenerCiudades y catálogo en src/features/ciudades/ciudades.service.ts (FR-009).
 - [ ] T007 [US1] Probar 0/1/20/21/40/41 ciudades, límites, contador y texto seguro en src/features/ciudades/ciudades.component.test.ts (FR-003, FR-005, FR-006, FR-012, SC-001).
 - [ ] T008 [US1] Implementar sección, lista, contador y navegación accesible en src/features/ciudades/ciudades.component.ts y ciudades.css (FR-001 a FR-003, FR-005, FR-011).
 
@@ -32,8 +32,8 @@ Meta: filtro sobre toda la lista; ensayo independiente con nombres acentuados fu
 
 Meta: errores distintos y reintento sin perder ficha; una descarga concurrente.
 
-- [ ] T011 [US3] Probar caché, concurrencia, cancelación independiente, offline, timeout 10 s, HTTP/JSON inválido y reintento en src/features/ciudades/ciudades.service.test.ts (FR-008 a FR-010, FR-013, SC-003, SC-004).
-- [ ] T012 [US3] Completar caché por promesa, liberación por identidad y retirada de listeners en src/features/ciudades/ciudades.service.ts (FR-009, FR-010).
+- [x] T011 [US3] Probar caché, concurrencia, cancelación independiente, offline, timeout 10 s, HTTP/JSON inválido y reintento en src/features/ciudades/ciudades.service.test.ts (FR-008 a FR-010, FR-013, SC-003, SC-004).
+- [x] T012 [US3] Completar caché por promesa, liberación por identidad y retirada de listeners en src/features/ciudades/ciudades.service.ts (FR-009, FR-010).
 - [ ] T013 [US3] Probar carga, mensajes, reintento, foco y abort tardío en src/features/ciudades/ciudades.component.test.ts; implementar estados en ciudades.component.ts (FR-008, FR-010, FR-011).
 
 ## Phase 6: Integration and Polish
