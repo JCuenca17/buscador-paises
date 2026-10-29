@@ -52,6 +52,8 @@ Mientras el usuario escribe un nombre de país, ve una lista breve de coincidenc
 3. **Dado** que aparece una sugerencia, **cuando** el usuario la elige con el ratón, **entonces** se busca ese país mediante el flujo de búsqueda existente.
 4. **Dado** que aparecen sugerencias, **cuando** el usuario recorre la lista y confirma una con el teclado, **entonces** se busca el país activo mediante el flujo de búsqueda existente.
 5. **Dado** que se ha elegido una sugerencia, **cuando** comienza la búsqueda, **entonces** la lista de sugerencias deja de mostrarse y el campo refleja el país elegido en español.
+6. **Dado** que dos países comparten el mismo nombre español normalizado, **cuando** aparecen en las sugerencias, **entonces** cada opción muestra un diferenciador visible que permite identificarla y seleccionarla sin ambigüedad.
+7. **Dado** que falla la carga del catálogo al escribir, **cuando** ocurre un error de conexión, timeout o respuesta inválida, **entonces** se muestra el mensaje específico en español y una acción «Reintentar sugerencias» que vuelve a cargar para la consulta actual.
 
 ### Casos límite
 
@@ -59,6 +61,9 @@ Mientras el usuario escribe un nombre de país, ve una lista breve de coincidenc
 - Si el texto no coincide con ningún país, no se muestran sugerencias; la búsqueda manual conserva el mensaje «No se encontró el país» del buscador base.
 - Si hay entre una y cinco coincidencias, se muestran todas; nunca se muestran más de cinco.
 - Si los nombres en español de dos países coinciden o son indistinguibles tras normalizar, las sugerencias deben seguir permitiendo elegir cada país sin ambigüedad.
+- Si una sugerencia necesita diferenciador, la etiqueta visible incluye el nombre español, el nombre canónico de CountriesNow y el código ISO2; el valor completo elegido puede resolverse al enviar con Enter o el botón.
+- Si falla la carga del catálogo de sugerencias, se muestra un error específico y un botón «Reintentar sugerencias»; este reintento actualiza la lista para el texto actual y no envía el formulario.
+- Los errores al resolver una búsqueda manual siguen usando el estado de error y el botón «Reintentar» de la ficha base, con el mismo texto de consulta.
 - Al editar el texto después de abrir la lista, las sugerencias anteriores no deben seguir siendo seleccionables.
 - Escape cierra la lista sin iniciar una búsqueda; las flechas arriba y abajo cambian la sugerencia activa sin sacar el foco del campo.
 - La interacción con sugerencias no debe impedir enviar una búsqueda manual, usar Enter ni conservar el foco visible.
@@ -82,6 +87,8 @@ Mientras el usuario escribe un nombre de país, ve una lista breve de coincidenc
 - **FR-011**: La funcionalidad NO DEBE realizar llamadas de red directamente ni obtener datos de fuentes distintas de la fuente aprobada por el proyecto.
 - **FR-012**: Los nombres de país recibidos como datos DEBEN insertarse en el DOM como texto, nunca interpretarse como marcado.
 - **FR-013**: Al cambiar el texto de búsqueda, las sugerencias DEBEN corresponder al texto actual y una selección DEBE delegar en el flujo base el manejo de carga, resultados y errores. La búsqueda manual con «Buscar» o Enter DEBE reconocer los mismos nombres en español que las sugerencias.
+- **FR-014**: Si falla la carga del catálogo de sugerencias, la interfaz DEBE mostrar un mensaje visible y específico en español para sin conexión, tiempo agotado o respuesta inválida, junto con «Reintentar sugerencias». Esta acción DEBE volver a cargar el catálogo para el texto actual sin enviar el formulario. Si la carga falla durante una búsqueda manual, la falla DEBE mostrarse mediante los mensajes y el botón «Reintentar» ya existentes en la ficha base.
+- **FR-015**: Cuando dos o más países coincidan con el mismo nombre español tras normalizar, cada opción DEBE mostrar una etiqueta diferenciada con el nombre español, el nombre canónico de CountriesNow y el ISO2. Elegir esa etiqueta DEBE resolver al país correspondiente, sin seleccionar arbitrariamente otro registro.
 
 ### Entidades clave
 
@@ -97,6 +104,8 @@ Mientras el usuario escribe un nombre de país, ve una lista breve de coincidenc
 - **SC-002**: Cada consulta muestra cero sugerencias si no hay coincidencias y nunca más de cinco si las hay.
 - **SC-003**: En pruebas de interacción, el usuario puede seleccionar una sugerencia tanto con ratón como solo con teclado y obtiene la ficha del país seleccionado.
 - **SC-004**: La funcionalidad puede probarse sin llamadas a la API real y sin modificar el flujo de búsqueda base para reproducir su carga, resultado y errores.
+- **SC-005**: Para cada uno de los tres tipos de fallo al cargar sugerencias, las pruebas verifican un mensaje español visible y que «Reintentar sugerencias» vuelve a intentar la carga del texto actual sin enviar la búsqueda.
+- **SC-006**: Si dos países tienen el mismo alias español normalizado, las pruebas verifican que sus etiquetas visibles son distintas y que cada una resuelve al registro correcto.
 
 ## Supuestos
 

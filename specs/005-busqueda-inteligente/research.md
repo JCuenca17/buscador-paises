@@ -22,25 +22,29 @@ proyecto sin incorporar una librería de internacionalización o autocomplete.
 
 ## R2. Datos para aliases y nombres españoles
 
-**Decisión**: obtener `/countries/capital` mediante `obtenerJson` desde `src/api/http.ts`; validar
-que `data` sea un arreglo y filtrar elementos que no tengan `name` o `iso2` no vacíos. Crear el
-nombre español con `new Intl.DisplayNames(["es"], { type: "region" }).of(iso2.toUpperCase())`.
-Mantener la promesa/lista válida en memoria durante la sesión y borrar la caché fallida para
-permitir reintento.
+**Decisión**: reutilizar la promesa cacheada de `/countries/capital` que ya posee
+`src/features/ficha/ficha.service.ts`, obtenida mediante `obtenerJson` desde `src/api/http.ts`.
+Después de aprobación de Jose, ese servicio expondrá un acceso de solo lectura a la misma promesa;
+el servicio nuevo construye su catálogo de alias a partir de ese arreglo y nunca dispara otra
+descarga ni lo modifica. Crear el nombre español con `new Intl.DisplayNames(["es"], { type:
+"region" }).of(iso2.toUpperCase())`.
 
 **Justificación**: el endpoint ya entrega nombre canónico e ISO2, suficientes para resolver la
-búsqueda base y generar el nombre en español. No se necesita una fuente local fija, una consulta
-por cada letra ni una nueva ruta de red. `obtenerJson` centraliza timeout de 10 segundos y errores.
+búsqueda base y generar el nombre en español. Compartir la promesa de la ficha garantiza una sola
+descarga por sesión de página y conserva el timeout/error de `obtenerJson`; la transformación
+local evita acoplar la ficha al catálogo de sugerencias.
 
 **Alternativas consideradas**:
 - Una lista codificada en la interfaz: descartada por la fuente única de la constitución y porque
   no representa los datos actuales del servicio.
 - Consultar un endpoint por cada sugerencia o tecla: descartado; la lista puede cargarse una vez y
   filtrarse localmente.
-- Exportar internamente la caché privada de `ficha.service.ts`: descartado en este plan porque
-  exigiría modificar más la funcionalidad de Jose y crear una dependencia entre servicios de
-  features. La lista pequeña se cachea una vez en la sesión de la nueva feature; la solicitud
-  adicional es una concesión explícita para mantener la propiedad local.
+- Mantener una caché privada paralela en búsqueda inteligente: descartada porque la ficha ya
+  descarga la misma lista y se incumpliría el objetivo de una sola solicitud compartida.
+- Mover toda la caché al cliente HTTP: descartado porque cambia la semántica general de red y
+  expande innecesariamente el alcance de `src/api`.
+- El acceso público acotado cruza el límite de propiedad de la ficha; su cambio está justificado
+  en el plan y bloqueado hasta la aprobación expresa de Jose.
 
 ## R3. Normalización y tildes
 
@@ -67,7 +71,10 @@ en la resolución del envío manual; después se acepta un alias español exacto
 país. Mantener el orden de la respuesta del API, limitar a cinco sugerencias y conservar la
 identidad por país, no solo por ISO2, porque la fuente puede repetir ISO2 (por ejemplo, entradas
 distintas de Cocos). Si un alias exacto español corresponde a más de un registro, no seleccionar un
-país arbitrariamente; las opciones coincidentes se mantienen separadas en la lista.
+país arbitrariamente. Las opciones ambiguas muestran `nombreEspanol — nombreApi (iso2)` y ese texto
+diferenciado se indexa como alias seleccionable; por tanto, el usuario puede escoger una opción
+concreta sin cambiar el formulario. La entrada española ambigua sin selección continúa como «No se
+encontró el país» en vez de elegir arbitrariamente.
 
 **Justificación**: el prefijo permite sugerir incrementalmente sin resultados poco relacionados;
 el orden estable hace reproducible el límite de cinco. El nombre canónico exacto evita que una
@@ -84,10 +91,11 @@ colisión de alias cambie la búsqueda existente.
 **Decisión**: agregar un adaptador opcional y acotado a la ficha para que el submit pase por el
 resolvedor antes de llamar a `buscarFicha`; el módulo nuevo monta las sugerencias sobre el campo
 existente desde `main.ts`. Al elegir una sugerencia, mantener el nombre español visible y enviar el
-formulario existente. La ficha conserva carga, validación, cancelación, ficha y manejo de errores.
-Los errores del resolvedor usan los mismos tipos/mensajes base y «Reintentar» vuelve a resolver la
-última consulta. La integración en `ficha.component.ts` necesita aprobación de Jose antes de
-implementarse.
+formulario existente. Exportar de `ficha.service.ts` un getter de solo lectura a la promesa de
+capitales ya cacheada permite que ambas funciones compartan una única descarga. La ficha conserva
+carga, validación, cancelación, ficha y manejo de errores. Los errores del resolvedor usan los
+mismos tipos/mensajes base y «Reintentar» vuelve a resolver la última consulta. La interfaz del
+getter y el adaptador requieren aprobación de Jose antes de implementarse.
 
 **Justificación**: la ficha construye el campo dentro de `montarFicha` y su submit pasa el valor
 capturado a `buscarFicha`; el módulo externo no tiene un punto de extensión público para resolver
@@ -96,6 +104,8 @@ un alias manual. Un adaptador evita duplicar la interfaz y la máquina de estado
 **Alternativas consideradas**:
 - Reescribir la ficha o crear otro formulario: descartado porque contradice FR-007 y la
   constitución.
+- Mantener dos cachés de la lista de capitales: descartado para evitar descargas duplicadas y
+  estados de actualización distintos.
 - Cambiar `src/api`: descartado; el cliente ya satisface las necesidades.
 - Interceptar y reescribir/restaurar el valor del input en un listener externo: descartado por las
   carreras con submit/Enter y porque acopla el feature a detalles internos del evento base.
@@ -106,7 +116,10 @@ un alias manual. Un adaptador evita duplicar la interfaz y la máquina de estado
 `aria-activedescendant`, opciones con identificadores estables y controles ArrowDown, ArrowUp,
 Enter y Escape. Usar nodos DOM y `textContent` para nombres externos. Cubrir lógica, UI, integración
 y errores con Vitest/jsdom; generar propiedades de variantes de mayúsculas, espacios y diacríticos
-con fast-check; simular la respuesta `obtenerJson`/`fetch` en todas las pruebas.
+con fast-check; simular la respuesta `obtenerJson`/`fetch` en todas las pruebas. Al fallar la carga
+de sugerencias, mostrar un `role="alert"` con mensajes distintos de sin conexión, tiempo agotado o
+respuesta inválida y un botón «Reintentar sugerencias» que reintenta solo el catálogo para el texto
+actual. Ante submit manual fallido, delegar el error al estado y botón «Reintentar» de la ficha.
 
 **Justificación**: cumple la constitución de teclado/lector de pantalla y la prohibición de red real
 en pruebas. fast-check ya está aprobado y no se necesita instalación.
@@ -115,3 +128,5 @@ en pruebas. fast-check ya está aprobado y no se necesita instalación.
 - Solo seleccionar con clic: descartado porque no es accesible por teclado.
 - Snapshot/ejemplos fijos como única cobertura de normalización: descartados porque la constitución
   exige pruebas basadas en propiedades para reglas generales.
+- Ocultar cualquier fallo de carga de sugerencias: descartado porque la constitución exige mensajes
+  propios para los tres tipos de error y una interfaz recuperable.
