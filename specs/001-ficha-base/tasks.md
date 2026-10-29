@@ -176,11 +176,11 @@ comprobar los mensajes y que en los dos primeros casos `buscarFicha` no se llama
 
 ### Pruebas de la historia 2 (escribirlas primero; deben fallar) ⚠️
 
-- [ ] T021 [P] [US2] Agregar a `src/features/ficha/ficha.service.test.ts`:
+- [X] T021 [P] [US2] Agregar a `src/features/ficha/ficha.service.test.ts`:
   - `buscarFicha("Atlantida")` → `{ tipo: "no-encontrado" }`;
   - `buscarFicha("España")` → `no-encontrado` (solo nombres en inglés, FR-005);
   - `buscarFicha("Reunion")` (sin tilde) → `no-encontrado`.
-- [ ] T022 [P] [US2] Agregar a `src/features/ficha/ficha.component.test.ts`:
+- [X] T022 [P] [US2] Agregar a `src/features/ficha/ficha.component.test.ts`:
   - con el campo vacío y con `"   "`, al enviar: `#validacion-pais` muestra «Escribe el nombre de un país», el campo tiene `aria-invalid="true"` y `aria-describedby="validacion-pais"`, y `buscarFicha` **no** se llama (FR-004);
   - un evento `input` en el campo borra el mensaje y `aria-invalid` (aclaración 5);
   - si `buscarFicha` devuelve `no-encontrado`, `[data-estado]` muestra «No se encontró el país», `[data-ficha]` está oculta y no hay ningún botón «Reintentar» en la página (FR-006);
@@ -189,7 +189,7 @@ comprobar los mensajes y que en los dos primeros casos `buscarFicha` no se llama
 
 ### Implementación de la historia 2
 
-- [ ] T023 [US2] Completar `src/features/ficha/ficha.component.ts`, hasta que pasen T021 y T022:
+- [X] T023 [US2] Completar `src/features/ficha/ficha.component.ts`, hasta que pasen T021 y T022:
   - antes de llamar a `buscarFicha`, si `normalizarNombre(input.value) === ""`, muestra «Escribe el nombre de un país» en `#validacion-pais` y pone `aria-invalid="true"`, sin consultar ni cambiar el resto de la pantalla (no es una búsqueda nueva: no aborta la búsqueda anterior, no incrementa `idBusqueda` y conserva la ficha que haya);
   - en el evento `input`, borra el mensaje y quita `aria-invalid`;
   - para `no-encontrado`, muestra «No se encontró el país» en `[data-estado]`, sin ficha ni «Reintentar».

@@ -3,6 +3,7 @@
  * Contrato: specs/001-ficha-base/contracts/ui.md
  */
 import { buscarFicha } from "./ficha.service";
+import { normalizarNombre } from "./normalizar";
 import { obtenerSecciones } from "./secciones";
 import type { PaisFicha } from "./tipos";
 
@@ -75,8 +76,22 @@ export function montarFicha(raiz: HTMLElement): void {
 
   formulario.addEventListener("submit", (evento) => {
     evento.preventDefault();
+    // Campo vacío: no es una búsqueda nueva; se conserva lo que haya en pantalla (FR-004).
+    if (normalizarNombre(campo.value) === "") {
+      validacion.textContent = "Escribe el nombre de un país";
+      campo.setAttribute("aria-invalid", "true");
+      return;
+    }
+    limpiarValidacion();
     void buscar(campo.value);
   });
+
+  campo.addEventListener("input", limpiarValidacion);
+
+  function limpiarValidacion(): void {
+    validacion.textContent = "";
+    campo.removeAttribute("aria-invalid");
+  }
 
   async function buscar(texto: string): Promise<void> {
     controlador?.abort();
@@ -94,6 +109,7 @@ export function montarFicha(raiz: HTMLElement): void {
 
     estado.textContent = "";
     if (resultado.tipo === "encontrado") pintarFicha(resultado.pais, signal);
+    else if (resultado.tipo === "no-encontrado") estado.textContent = "No se encontró el país";
   }
 
   function pintarFicha(pais: PaisFicha, signal: AbortSignal): void {

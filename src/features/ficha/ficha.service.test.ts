@@ -158,3 +158,25 @@ describe("buscarFicha: casos normales", () => {
     await expect(resultado).resolves.toEqual({ tipo: "cancelada" });
   });
 });
+
+describe("buscarFicha: país inexistente (historia 2)", () => {
+  beforeEach(() => {
+    reiniciarCache();
+    vi.stubGlobal("fetch", simularFetch());
+  });
+
+  it.each([
+    ["un nombre que no existe", "Atlantida"],
+    ["un nombre en español (solo nombres en inglés, FR-005)", "España"],
+    ["un nombre sin su tilde (no se quitan tildes, FR-005)", "Reunion"],
+  ])("devuelve no-encontrado para %s", async (_caso, texto) => {
+    await expect(buscarFicha(texto)).resolves.toEqual({ tipo: "no-encontrado" });
+  });
+
+  it("encuentra Réunion escrito con su tilde", async () => {
+    await expect(buscarFicha("réunion")).resolves.toMatchObject({
+      tipo: "encontrado",
+      pais: { nombre: "Réunion", iso2: "RE" },
+    });
+  });
+});

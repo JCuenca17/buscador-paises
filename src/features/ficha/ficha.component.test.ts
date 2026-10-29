@@ -363,3 +363,118 @@ describe("montarFicha: historia 1", () => {
     });
   });
 });
+
+describe("montarFicha: historia 2", () => {
+  const validacion = () => $("#validacion-pais");
+
+  beforeEach(() => {
+    vi.mocked(buscarFicha).mockReset();
+    reiniciarSecciones();
+    document.body.replaceChildren();
+    montarFicha(document.body);
+  });
+
+  it.each([
+    ["vacío", ""],
+    ["con solo espacios", "   "],
+  ])("con el campo %s muestra la validación y no busca (FR-004)", async (_caso, texto) => {
+    buscarConBoton(texto);
+    await esperar();
+
+    expect(validacion().textContent).toBe("Escribe el nombre de un país");
+    expect(campo().getAttribute("aria-invalid")).toBe("true");
+    expect(campo().getAttribute("aria-describedby")).toBe("validacion-pais");
+    expect(buscarFicha).not.toHaveBeenCalled();
+    expect(estado().textContent).toBe("");
+    expect(ficha().hidden).toBe(true);
+  });
+
+  it("con Enter y el campo vacío también muestra la validación", async () => {
+    buscarConEnter("  ");
+    await esperar();
+
+    expect(validacion().textContent).toBe("Escribe el nombre de un país");
+    expect(buscarFicha).not.toHaveBeenCalled();
+  });
+
+  it("al escribir se borran el mensaje de validación y aria-invalid", () => {
+    buscarConBoton("");
+    expect(validacion().textContent).toBe("Escribe el nombre de un país");
+
+    escribir("P");
+
+    expect(validacion().textContent).toBe("");
+    expect(campo().hasAttribute("aria-invalid")).toBe(false);
+  });
+
+  it("muestra «No se encontró el país» sin ficha ni «Reintentar» (FR-006)", async () => {
+    vi.mocked(buscarFicha).mockResolvedValue({ tipo: "no-encontrado" });
+
+    buscarConBoton("Atlantida");
+    await esperar();
+
+    expect(estado().textContent).toBe("No se encontró el país");
+    expect(ficha().hidden).toBe(true);
+    const botones = [...document.querySelectorAll("button")].map((b) => b.textContent);
+    expect(botones).not.toContain("Reintentar");
+    expect(botones).toEqual(["Buscar"]);
+  });
+
+  it("una búsqueda válida después de una validación quita el mensaje", async () => {
+    vi.mocked(buscarFicha).mockResolvedValue(encontrado(PERU));
+    buscarConBoton("");
+    expect(validacion().textContent).toBe("Escribe el nombre de un país");
+
+    // Sin evento input: el envío válido debe limpiar el mensaje por sí mismo.
+    campo().value = "Peru";
+    botonBuscar().click();
+    await esperar();
+
+    expect(validacion().textContent).toBe("");
+    expect(campo().hasAttribute("aria-invalid")).toBe(false);
+    expect(buscarFicha).toHaveBeenCalledTimes(1);
+    expect(ficha().hidden).toBe(false);
+  });
+
+  it("con una ficha en pantalla, enviar el campo vacío la conserva junto con sus secciones", async () => {
+    let signalSeccion: AbortSignal | undefined;
+    registrarSeccion({
+      id: "poblacion",
+      titulo: "Población",
+      renderizar(_pais, contenedor, signal) {
+        signalSeccion = signal;
+        const p = document.createElement("p");
+        p.textContent = "contenido población";
+        contenedor.append(p);
+      },
+    });
+    vi.mocked(buscarFicha).mockResolvedValue(encontrado(PERU));
+    buscarConBoton("Peru");
+    await esperar();
+
+    buscarConBoton("  ");
+    await esperar();
+
+    expect(validacion().textContent).toBe("Escribe el nombre de un país");
+    expect(buscarFicha).toHaveBeenCalledTimes(1);
+    expect(ficha().hidden).toBe(false);
+    expect(ficha().querySelector("h2")!.textContent).toBe("Peru");
+    expect($('[data-seccion="poblacion"]').textContent).toContain("contenido población");
+    expect(signalSeccion!.aborted).toBe(false);
+    expect(estado().textContent).toBe("");
+  });
+
+  it("enviar el campo vacío no descarta una búsqueda en curso", async () => {
+    const respuesta = diferida<ResultadoBusqueda>();
+    vi.mocked(buscarFicha).mockReturnValue(respuesta.promesa);
+    buscarConBoton("Peru");
+
+    buscarConBoton("");
+    const signalBusqueda = vi.mocked(buscarFicha).mock.calls[0]![1]!.signal!;
+    expect(signalBusqueda.aborted).toBe(false);
+
+    respuesta.resolver(encontrado(PERU));
+    await esperar();
+    expect(ficha().querySelector("h2")!.textContent).toBe("Peru");
+  });
+});
